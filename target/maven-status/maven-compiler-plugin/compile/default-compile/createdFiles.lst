@@ -1,0 +1,5 @@
+SpringConfig\WebConfig.class
+filter\CharsetFilter.class
+controller\LogInController.class
+controller\RegistrationController.class
+SpringConfig\SpringConfig.class
