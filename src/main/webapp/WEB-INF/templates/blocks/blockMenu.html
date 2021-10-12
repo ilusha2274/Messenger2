@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Messenger</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <style>
+		   a.nav-link
+		   {
+			color: #ffffff;
+		   }
+		</style>
+</head>
+
+
+<body style = "background-color: #1e1d2f">
+
+
+<div th:fragment="blockMenu">
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style=" height : 96vh; width: 295px;">
+        <a href="/home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+            <span class="fs-4">Messenger</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="/profile" class="nav-link" th:classappend="${profile ? 'active' : ''}">Профиль</a>
+            </li>
+            <li class="nav-item">
+                <a href="/posts" class="nav-link" th:classappend="${posts ? 'active' : ''}">Сообщения</a>
+            </li>
+            <li class="nav-item">
+                <a href="/newmessage" class="nav-link" th:classappend="${newmessage ? 'active' : ''}">Новое Сообщение</a>
+            </li>
+            <li class="nav-item">
+                <a href="/settings" class="nav-link" th:classappend="${settings ? 'active' : ''}">Настройки</a>
+            </li>
+            <li class="nav-item">
+                <a href="/exit" class="nav-link" th:classappend="${exit ? 'active' : ''}">Выход</a>
+            </li>
+        </ul>
+        <hr>
+
+        <div class="dropdown">
+            <a href="" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
+                <strong th:text="${title}"></strong>
+            </a>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

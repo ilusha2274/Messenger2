@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Messenger</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <colorMenu th:insert="blocks/colorMenu :: colorMenu"></colorMenu>
+</head>
+
+<body style = "background-color: #1e1d2f">
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-2 gy-3">
+            <blockMenu th:insert="blocks/blockMenu :: blockMenu"></blockMenu>
+        </div>
+
+        <!-- Users box-->
+        <div class="col-lg-3 gy-3 p-0" style="height : 96vh; background-color: #1e1d2f">
+
+            <nav class="navbar navbar-light bg-light">
+                <div class="container-fluid">
+                    <a class="navbar-brand">Поиск</a>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+            </nav>
+
+            <div class="overflow-auto p-3 mb-3 mb-md-2 mr-md-3 bg-light" style=" height : 90vh;">
+
+                <div class="px-2 py-3 chat-box bg-white h-100">
+
+                    <tr th:each="printPost : ${printPosts}">
+                        <td th:insert="blocks/blockChat :: blockChat"></td>
+                    </tr>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Box-->
+        <div class="col-lg-7 gy-3"  style="height : 96vh; background-color: #1e1d2f">
+            <div class="overflow-auto p-3 mb-3 mb-md-2 mr-md-3 bg-light " style="height : 87vh;">
+
+                <div class="px-2 py-3 chat-box bg-white h-100">
+
+                    <tr th:each="printMessage : ${printMessages}">
+                        <td th:if="${printMessage.author}" th:insert="blocks/blockReceiverMessage :: blockReceiverMessage"></td>
+                        <td th:unless="${printMessage.author}" th:insert="blocks/blockSenderMessage :: blockSenderMessage"></td>
+                    </tr>
+
+                </div>
+
+            </div>
+            <!-- Typing area -->
+            <form method="post" class="bg-light">
+                <div class="input-group">
+                    <input type="text" name="message" placeholder="Type a message" aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light">
+                    <div class="input-group-append">
+                        <button id="button-addon2" type="submit" class="btn btn-link"> <i class="fa fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,5 +1,9 @@
 package SpringConfig;
 
+import CollectionRepository.CollectionChatRepository;
+import CollectionRepository.CollectionUserRepository;
+import interfaceRepository.ChatRepository;
+import interfaceRepository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +26,16 @@ public class SpringConfig implements WebMvcConfigurer {
     @Autowired
     public SpringConfig(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
+    }
+
+    @Bean
+    public  UserRepository userRepository() {
+        return new CollectionUserRepository();
+    }
+
+    @Bean
+    public ChatRepository chatRepository(){
+        return new CollectionChatRepository();
     }
 
     @Bean
