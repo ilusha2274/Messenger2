@@ -6,9 +6,7 @@ import Repository.Chat;
 import Repository.User;
 import interfaceRepository.ChatRepository;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -33,11 +31,10 @@ public class ChatController {
         this.servletContext = servletContext;
     }
 
-    @GetMapping("/chat/*")
+    @GetMapping("/chat/{id}")
     public void printHewMessage(HttpServletRequest req, @SessionAttribute User user,
-                                HttpServletResponse resp) throws IOException {
-        String contextPath = req.getRequestURI();
-        int id = findIdChat(contextPath,resp);
+                                HttpServletResponse resp, @PathVariable Integer id) throws IOException {
+
         WebContext webContext = new WebContext(req,resp,servletContext);
 
         ArrayList<PrintPost> printPosts = printChats(user);
@@ -55,34 +52,12 @@ public class ChatController {
         templateEngine.process("chat",webContext, resp.getWriter());
     }
 
-    @PostMapping("/chat/*")
+    @PostMapping("/chat/{id}")
     public void chat(String message,@SessionAttribute User user,
-                     HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String contextPath = req.getRequestURI();
-        int id = findIdChat(contextPath,resp);
+                     HttpServletRequest req, HttpServletResponse resp,@PathVariable Integer id) throws IOException {
+
         chatRepository.getByNumberChat(id).addMessage(user,message);
         resp.sendRedirect("/chat/" + id);
-    }
-
-    private int findIdChat (String contextPath, HttpServletResponse resp) throws IOException {
-        char[] contextPathChar = contextPath.toCharArray();
-        int check = 0;
-        StringBuilder chatId = new StringBuilder();
-        for (char c : contextPathChar) {
-            if (check < 2) {
-                if (c == '/') {
-                    check++;
-                }
-            } else {
-                chatId.append(c);
-            }
-        }
-        try {
-            check = Integer.parseInt(chatId.toString());
-        }catch (NumberFormatException e){
-            resp.sendRedirect("/posts");
-        }
-        return check;
     }
 
     private ArrayList<PrintPost> printChats (User user){

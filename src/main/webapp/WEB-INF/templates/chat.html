@@ -20,7 +20,7 @@
 
             <nav class="navbar navbar-light bg-light">
                 <div class="container-fluid">
-                    <a class="navbar-brand">Поиск</a>
+                    <a class="navbar-brand">Search</a>
                     <form class="d-flex">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Search</button>
@@ -43,7 +43,7 @@
         <div class="col-lg-7 gy-3"  style="height : 96vh; background-color: #1e1d2f">
             <div class="overflow-auto p-3 mb-3 mb-md-2 mr-md-3 bg-light " style="height : 87vh;">
 
-                <div class="px-2 py-3 chat-box bg-white h-100">
+                <div class="px-2 py-3 chat-box bg-white 100vh">
 
                     <tr th:each="printMessage : ${printMessages}">
                         <td th:if="${printMessage.author}" th:insert="blocks/blockReceiverMessage :: blockReceiverMessage"></td>
