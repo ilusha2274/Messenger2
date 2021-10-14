@@ -90,18 +90,35 @@ public class BlockMenuController {
     }
 
     private ArrayList<PrintPost> printChats (User user){
+
         ArrayList<PrintPost> printPosts = new ArrayList<>();
-        List<Chat> chat = chatRepository.findListChatByUser(user);
-        for(int i =0;i<chat.size();i++){
-            PrintPost printPost = new PrintPost();
-            if (user == chat.get(i).getUser1()){
-                printPost.setNameChat(chat.get(i).getUser2().getName());
-                printPost.setIdChat(chat.get(i).getChatId());
-            }else {
-                printPost.setNameChat(chat.get(i).getUser1().getName());
-                printPost.setIdChat(chat.get(i).getChatId());
+        List<Chat> chats = chatRepository.findListChatByUser(user);
+
+        for(int i =0;i<chats.size();i++){
+
+            String date = "";
+            String lastMessage = "";
+
+            if (chats.get(i).getLastMessage() != null){
+
+                date = chats.get(i).getLastMessage().getLocalDate().getDayOfMonth() +
+                        " " + chats.get(i).getLastMessage().getLocalDate().getMonth().
+                        toString().substring(0,3).toLowerCase();
+
+                lastMessage = chats.get(i).getLastMessage().getText();
+                if (lastMessage.length() > 25){
+                    lastMessage = lastMessage.substring(0,25);
+                    lastMessage += "...";
+                }
             }
-            printPosts.add(printPost);
+
+            if (user == chats.get(i).getUser1()){
+                PrintPost printPost = new PrintPost(chats.get(i).getUser2().getName(),chats.get(i).getChatId(),date,lastMessage);
+                printPosts.add(printPost);
+            }else {
+                PrintPost printPost = new PrintPost(chats.get(i).getUser1().getName(),chats.get(i).getChatId(),date,lastMessage);
+                printPosts.add(printPost);
+            }
         }
         return printPosts;
     }

@@ -3,6 +3,29 @@ package PrintClass;
 public class PrintPost {
     public String nameChat;
     public int idChat;
+    String date;
+    String lastMessage;
+
+    public PrintPost(String nameChat, int idChat, String date, String lastMessage) {
+        this.nameChat = nameChat;
+        this.idChat = idChat;
+        this.date = date;
+        this.lastMessage = lastMessage;
+    }
+
+    public String getDate() {
+        return date;
+    }
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getLastMessage() {
+        return lastMessage;
+    }
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
+    }
 
     public String getNameChat() {
         return nameChat;

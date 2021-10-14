@@ -1,5 +1,7 @@
 package Repository;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +10,20 @@ public class Chat {
     private User user1;
     private User user2;
     private int chatId = 0;
+    private Message lastMessage;
     //private String name;
 
     public Chat(User user1, User user2,int chatId) {
         this.user1 = user1;
         this.user2 = user2;
         this.chatId = chatId;
+    }
+
+    public Message getLastMessage() {
+        return lastMessage;
+    }
+    public void setLastMessage(Message lastMessage) {
+        this.lastMessage = lastMessage;
     }
 
     public User getUser1() {
@@ -46,7 +56,10 @@ public class Chat {
     //}
 
     public void addMessage (User user, String message){
-        Message message1 = new Message(user,message);
+        LocalTime localTime = LocalTime.now();
+        LocalDate localDate = LocalDate.now();
+        Message message1 = new Message(user,message,localDate,localTime);
+        lastMessage = message1;
         messages.add(message1);
     }
 
