@@ -23,8 +23,12 @@ public class PrintPost {
     public String getLastMessage() {
         return lastMessage;
     }
-    public void setLastMessage(String lastMessage) {
-        this.lastMessage = lastMessage;
+    public void setLastMessage(String Message) {
+        if (Message.length() > 25){
+            Message = Message.substring(0,25);
+            Message += "...";
+        }
+        lastMessage = Message;
     }
 
     public String getNameChat() {
@@ -40,4 +44,5 @@ public class PrintPost {
     public void setIdChat(int idChat) {
         this.idChat = idChat;
     }
+
 }

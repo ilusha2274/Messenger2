@@ -16,8 +16,10 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 public class BlockMenuController {
@@ -93,32 +95,21 @@ public class BlockMenuController {
 
         ArrayList<PrintPost> printPosts = new ArrayList<>();
         List<Chat> chats = chatRepository.findListChatByUser(user);
+        DateTimeFormatter dateTimeFormatterDate = DateTimeFormatter.ofPattern("dd MMM", Locale.ENGLISH);
 
         for(int i =0;i<chats.size();i++){
 
-            String date = "";
-            String lastMessage = "";
-
-            if (chats.get(i).getLastMessage() != null){
-
-                date = chats.get(i).getLastMessage().getLocalDate().getDayOfMonth() +
-                        " " + chats.get(i).getLastMessage().getLocalDate().getMonth().
-                        toString().substring(0,3).toLowerCase();
-
-                lastMessage = chats.get(i).getLastMessage().getText();
-                if (lastMessage.length() > 25){
-                    lastMessage = lastMessage.substring(0,25);
-                    lastMessage += "...";
-                }
-            }
-
+            PrintPost printPost;
             if (user == chats.get(i).getUser1()){
-                PrintPost printPost = new PrintPost(chats.get(i).getUser2().getName(),chats.get(i).getChatId(),date,lastMessage);
-                printPosts.add(printPost);
+                printPost = new PrintPost(chats.get(i).getUser2().getName(), chats.get(i).getChatId(), "", "");
             }else {
-                PrintPost printPost = new PrintPost(chats.get(i).getUser1().getName(),chats.get(i).getChatId(),date,lastMessage);
-                printPosts.add(printPost);
+                printPost = new PrintPost(chats.get(i).getUser1().getName(), chats.get(i).getChatId(), "", "");
             }
+            if (chats.get(i).getLastMessage() != null){
+                printPost.setDate(chats.get(i).getLastMessage().getLocalDate().format(dateTimeFormatterDate));
+                printPost.setLastMessage(chats.get(i).getLastMessage().getText());
+            }
+            printPosts.add(printPost);
         }
         return printPosts;
     }
