@@ -1,10 +1,8 @@
-package CollectionRepository;
+package repository;
 
-import Repository.User;
 import exception.PasswordMismatchException;
 import exception.WrongEmailException;
 import exception.WrongLoginPasswordException;
-import org.springframework.stereotype.Component;
 
 
 public interface UserRepository {

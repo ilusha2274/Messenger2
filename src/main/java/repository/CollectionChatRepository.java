@@ -1,7 +1,4 @@
-package CollectionRepository;
-
-import Repository.Chat;
-import Repository.User;
+package repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package PrintClass;
+package helper;
 
 public class PrintPost {
     public String nameChat;

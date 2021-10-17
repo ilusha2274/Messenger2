@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<div th:fragment="blockChatBox">
+    <div class="overflow-auto p-3 mb-3 mb-md-2 mr-md-3 bg-light " style="height : 87vh;">
+
+        <div class="px-2 py-3 chat-box bg-white 100vh">
+
+            <tr th:each="printMessage : ${printMessages}">
+                <td th:if="${printMessage.author}" th:insert="blocks/blockReceiverMessage :: blockReceiverMessage"></td>
+                <td th:unless="${printMessage.author}" th:insert="blocks/blockSenderMessage :: blockSenderMessage"></td>
+            </tr>
+
+        </div>
+
+    </div>
+    <!-- Typing area -->
+    <form method="post" class="bg-light">
+        <div class="input-group">
+            <input type="text" name="message" placeholder="Type a message" aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light">
+            <div class="input-group-append">
+                <button id="button-addon2" type="submit" class="btn btn-link"> <i class="fa fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </form>
+</div>

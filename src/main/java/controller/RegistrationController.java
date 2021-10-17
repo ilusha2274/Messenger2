@@ -1,9 +1,9 @@
 package controller;
 
-import Repository.User;
+import repository.User;
 import exception.PasswordMismatchException;
 import exception.WrongEmailException;
-import CollectionRepository.UserRepository;
+import repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

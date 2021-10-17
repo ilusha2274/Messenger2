@@ -1,4 +1,4 @@
-package PrintClass;
+package helper;
 
 public class PrintMessage {
     boolean author;

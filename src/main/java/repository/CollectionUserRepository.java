@@ -1,6 +1,5 @@
-package CollectionRepository;
+package repository;
 
-import Repository.User;
 import exception.PasswordMismatchException;
 import exception.WrongEmailException;
 import exception.WrongLoginPasswordException;

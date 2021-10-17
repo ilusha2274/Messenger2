@@ -1,8 +1,8 @@
 package controller;
 
-import Repository.User;
-import CollectionRepository.ChatRepository;
-import CollectionRepository.UserRepository;
+import repository.User;
+import repository.ChatRepository;
+import repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
