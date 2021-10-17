@@ -2,8 +2,8 @@ package SpringConfig;
 
 import CollectionRepository.CollectionChatRepository;
 import CollectionRepository.CollectionUserRepository;
-import interfaceRepository.ChatRepository;
-import interfaceRepository.UserRepository;
+import CollectionRepository.ChatRepository;
+import CollectionRepository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;

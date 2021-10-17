@@ -4,18 +4,12 @@ import PrintClass.PrintMessage;
 import PrintClass.PrintPost;
 import Repository.Chat;
 import Repository.User;
-import interfaceRepository.ChatRepository;
+import CollectionRepository.ChatRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,44 +18,33 @@ import java.util.Locale;
 @Controller
 public class ChatController {
 
-    private final TemplateEngine templateEngine;
     private final ChatRepository chatRepository;
-    private final ServletContext servletContext;
 
 
-    public ChatController(TemplateEngine templateEngine, ChatRepository chatRepository, ServletContext servletContext) {
-        this.templateEngine = templateEngine;
+    public ChatController(ChatRepository chatRepository) {
         this.chatRepository = chatRepository;
-        this.servletContext = servletContext;
     }
 
     @GetMapping("/chat/{id}")
-    public void printHewMessage(HttpServletRequest req, @SessionAttribute User user,
-                                HttpServletResponse resp, @PathVariable Integer id) throws IOException {
-
-        WebContext webContext = new WebContext(req,resp,servletContext);
+    public String printHewMessage(Model model, @SessionAttribute User user, @PathVariable Integer id){
 
         ArrayList<PrintPost> printPosts = printChats(user);
         ArrayList<PrintMessage> printMessages = printMessages(chatRepository.getByNumberChat(id),user);
 
-        webContext.setVariable("profile",false);
-        webContext.setVariable("posts",true);
-        webContext.setVariable("settings",false);
-        webContext.setVariable("newmessage",false);
-        webContext.setVariable("exit",false);
-        webContext.setVariable("title",user.getName());
-        webContext.setVariable("printMessages",printMessages);
-        webContext.setVariable("printPosts",printPosts);
+        model.addAttribute("activePage", "POSTS");
+        model.addAttribute("title",user.getName());
+        model.addAttribute("printMessages",printMessages);
+        model.addAttribute("printPosts",printPosts);
 
-        templateEngine.process("chat",webContext, resp.getWriter());
+        return "chat";
     }
 
     @PostMapping("/chat/{id}")
-    public void chat(String message,@SessionAttribute User user,
-                     HttpServletRequest req, HttpServletResponse resp,@PathVariable Integer id) throws IOException {
+    public String chat(String message,@SessionAttribute User user, @PathVariable Integer id) throws IOException {
 
         chatRepository.getByNumberChat(id).addMessage(user,message);
-        resp.sendRedirect("/chat/" + id);
+
+        return "redirect:" + id;
     }
 
     private ArrayList<PrintPost> printChats (User user){

@@ -4,8 +4,6 @@ import Repository.User;
 import exception.PasswordMismatchException;
 import exception.WrongEmailException;
 import exception.WrongLoginPasswordException;
-import interfaceRepository.UserRepository;
-import org.springframework.stereotype.Component;
 
 
 import java.util.ArrayList;

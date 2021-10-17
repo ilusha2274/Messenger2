@@ -25,19 +25,19 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="/profile" class="nav-link" th:classappend="${profile ? 'active' : ''}">Profile</a>
+                <a href="/profile" class="nav-link" th:classappend="${activePage == 'PROFILE' ? 'active' : ''}">Profile</a>
             </li>
             <li class="nav-item">
-                <a href="/posts" class="nav-link" th:classappend="${posts ? 'active' : ''}">Posts</a>
+                <a href="/posts" class="nav-link" th:classappend="${activePage == 'POSTS' ? 'active' : ''}">Posts</a>
             </li>
             <li class="nav-item">
-                <a href="/newmessage" class="nav-link" th:classappend="${newmessage ? 'active' : ''}">New message</a>
+                <a href="/newmessage" class="nav-link" th:classappend="${activePage == 'NEWMESSAGES' ? 'active' : ''}">New message</a>
             </li>
             <li class="nav-item">
-                <a href="/settings" class="nav-link" th:classappend="${settings ? 'active' : ''}">Settings</a>
+                <a href="/settings" class="nav-link" th:classappend="${activePage == 'SETTINGS' ? 'active' : ''}">Settings</a>
             </li>
             <li class="nav-item">
-                <a href="/exit" class="nav-link" th:classappend="${exit ? 'active' : ''}">exit</a>
+                <a href="/exit" class="nav-link">exit</a>
             </li>
         </ul>
         <hr>

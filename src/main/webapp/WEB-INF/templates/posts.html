@@ -29,13 +29,14 @@
             </nav>
 
             <div class="overflow-auto p-3 mb-3 mb-md-2 mr-md-3 bg-light" style=" height : 90vh;">
+
                 <div class="px-2 py-3 chat-box bg-white h-100">
+
                     <tr th:each="printPost : ${printPosts}">
                         <td th:insert="blocks/blockChat :: blockChat"></td>
                     </tr>
                 </div>
             </div>
-
         </div>
 
     </div>

@@ -1,4 +1,4 @@
-package interfaceRepository;
+package CollectionRepository;
 
 import Repository.Chat;
 import Repository.User;
