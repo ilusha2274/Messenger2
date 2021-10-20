@@ -1,12 +1,12 @@
 package helper;
 
-public class PrintPost {
+public class PrintChat {
     public String nameChat;
     public int idChat;
     String date;
     String lastMessage;
 
-    public PrintPost(String nameChat, int idChat, String date, String lastMessage) {
+    public PrintChat(String nameChat, int idChat, String date, String lastMessage) {
         this.nameChat = nameChat;
         this.idChat = idChat;
         this.date = date;
@@ -16,6 +16,7 @@ public class PrintPost {
     public String getDate() {
         return date;
     }
+
     public void setDate(String date) {
         this.date = date;
     }
@@ -23,9 +24,10 @@ public class PrintPost {
     public String getLastMessage() {
         return lastMessage;
     }
+
     public void setLastMessage(String Message) {
-        if (Message.length() > 25){
-            Message = Message.substring(0,25);
+        if (Message.length() > 25) {
+            Message = Message.substring(0, 25);
             Message += "...";
         }
         lastMessage = Message;
@@ -34,6 +36,7 @@ public class PrintPost {
     public String getNameChat() {
         return nameChat;
     }
+
     public void setNameChat(String nameChat) {
         this.nameChat = nameChat;
     }
@@ -41,6 +44,7 @@ public class PrintPost {
     public int getIdChat() {
         return idChat;
     }
+
     public void setIdChat(int idChat) {
         this.idChat = idChat;
     }

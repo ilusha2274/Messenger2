@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class LogInController {
@@ -20,19 +20,19 @@ public class LogInController {
     }
 
     @GetMapping("/login")
-    public String printLogin(){
+    public String printLogin() {
         return "login";
     }
 
     @PostMapping("/login")
-    public String login(Model model, HttpServletRequest req, String email, String password){
+    public String login(HttpSession session, Model model, String email, String password) {
 
         try {
-            User userLogIn = userRepository.logInUser(email,password);
-            req.getSession().setAttribute("user", userLogIn);
+            User userLogIn = userRepository.logInUser(email, password);
+            session.setAttribute("user", userLogIn);
             return "redirect:home";
         } catch (WrongLoginPasswordException e) {
-            model.addAttribute("exception",e.getMessage());
+            model.addAttribute("exception", e.getMessage());
             return "login";
         }
     }

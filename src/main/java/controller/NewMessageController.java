@@ -21,24 +21,24 @@ public class NewMessageController {
     }
 
     @GetMapping("/newmessage")
-    public String printHewMessage(@SessionAttribute User user, Model model){
+    public String printHewMessage(@SessionAttribute User user, Model model) {
 
         model.addAttribute("activePage", "NEWMESSAGES");
-        model.addAttribute("title",user.getName());
+        model.addAttribute("title", user.getName());
 
         return "newmessage";
     }
 
     @PostMapping("/newmessage")
-    public String newMessage(String email, @SessionAttribute User user,Model model){
+    public String newMessage(String email, @SessionAttribute User user, Model model) {
 
-        if (userRepository.findUserByEmail(email)!= null){
-            model.addAttribute("activePage", "POSTS");
-            chatRepository.addChat(user,userRepository.findUserByEmail(email));
-            return "redirect:posts";
-        }else {
+        if (userRepository.findUserByEmail(email) != null) {
+            model.addAttribute("activePage", "CHAT");
+            chatRepository.addChat(user, userRepository.findUserByEmail(email));
+            return "redirect:chat";
+        } else {
             model.addAttribute("activePage", "NEWMESSAGES");
-            model.addAttribute("exception","Пользователь не найден");
+            model.addAttribute("exception", "Пользователь не найден");
             return "newmessage";
         }
     }

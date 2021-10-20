@@ -9,7 +9,7 @@ public class Message {
     private LocalDate localDate;
     private User author;
 
-    public Message (User user,String text,LocalDate localDate,LocalTime localTime){
+    public Message(User user, String text, LocalDate localDate, LocalTime localTime) {
         this.text = text;
         author = user;
         this.localDate = localDate;
@@ -19,6 +19,7 @@ public class Message {
     public LocalDate getLocalDate() {
         return localDate;
     }
+
     public void setLocalDate(LocalDate localDate) {
         this.localDate = localDate;
     }
@@ -26,6 +27,7 @@ public class Message {
     public LocalTime getLocalTime() {
         return localTime;
     }
+
     public void setLocalTime(LocalTime localTime) {
         this.localTime = localTime;
     }
@@ -33,6 +35,7 @@ public class Message {
     public User getAuthor() {
         return author;
     }
+
     public void setAuthor(User author) {
         this.author = author;
     }
@@ -40,6 +43,7 @@ public class Message {
     public String getText() {
         return text;
     }
+
     public void setText(String text) {
         this.text = text;
     }

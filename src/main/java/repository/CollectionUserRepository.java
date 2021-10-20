@@ -15,10 +15,10 @@ public class CollectionUserRepository implements UserRepository {
     private Map<String, User> usersByEmail = new HashMap<>();
 
     @Override
-    public User addUser(User user,String twoPassword) throws PasswordMismatchException, WrongEmailException {
-        if (!(findEmailUser(user.getEmail())) && checkPassword(user.getPassword(),twoPassword)){
+    public User addUser(User user, String twoPassword) throws PasswordMismatchException, WrongEmailException {
+        if (!(findEmailUser(user.getEmail())) && checkPassword(user.getPassword(), twoPassword)) {
             users.add(user);
-            usersByEmail.put(user.getEmail(),user);
+            usersByEmail.put(user.getEmail(), user);
             return user;
         }
         return null;
@@ -32,7 +32,7 @@ public class CollectionUserRepository implements UserRepository {
     @Override
     public boolean findEmailUser(String email) throws WrongEmailException {
 
-        if (usersByEmail.containsKey(email)){
+        if (usersByEmail.containsKey(email)) {
             throw new WrongEmailException("email занят");
         }
         return false;
@@ -40,9 +40,9 @@ public class CollectionUserRepository implements UserRepository {
 
     @Override
     public boolean checkPassword(String password, String twoPassword) throws PasswordMismatchException {
-        if (password.equals(twoPassword)){
+        if (password.equals(twoPassword)) {
             return true;
-        }else {
+        } else {
             throw new PasswordMismatchException("Пароли не совпадают");
         }
     }
@@ -55,9 +55,9 @@ public class CollectionUserRepository implements UserRepository {
     @Override
     public User logInUser(String email, String password) throws WrongLoginPasswordException {
         User user = findUserByEmail(email);
-        if (user != null && password.equals(user.getPassword())){
+        if (user != null && password.equals(user.getPassword())) {
             return user;
-        }else {
+        } else {
             throw new WrongLoginPasswordException("Неверное имя пользователя или пароль");
         }
     }

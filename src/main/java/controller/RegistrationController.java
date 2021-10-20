@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class RegistrationController {
@@ -21,23 +21,23 @@ public class RegistrationController {
     }
 
     @GetMapping("/registration")
-    public String registration(){
+    public String registration() {
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String registration (String email, String name, String password, String twoPassword,
-                                HttpServletRequest req, Model model){
+    public String registration(HttpSession session, String email, String name, String password,
+                               String twoPassword, Model model) {
 
-        User newUser = new User(name,email,password);
+        User newUser = new User(name, email, password);
 
         try {
-            userRepository.addUser(newUser,twoPassword);
-            req.getSession().setAttribute("user", newUser);
+            userRepository.addUser(newUser, twoPassword);
+            session.setAttribute("user", newUser);
             return "redirect:home";
 
-        }catch (WrongEmailException | PasswordMismatchException e){
-            model.addAttribute("exception",e.getMessage());
+        } catch (WrongEmailException | PasswordMismatchException e) {
+            model.addAttribute("exception", e.getMessage());
             return "registration";
         }
     }

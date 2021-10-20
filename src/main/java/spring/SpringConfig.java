@@ -1,5 +1,7 @@
 package spring;
 
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import repository.CollectionChatRepository;
 import repository.CollectionUserRepository;
 import repository.ChatRepository;
@@ -28,13 +30,19 @@ public class SpringConfig implements WebMvcConfigurer {
         this.applicationContext = applicationContext;
     }
 
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**")
+                .addResourceLocations("/webapp/css/");
+    }
+
     @Bean
-    public  UserRepository userRepository() {
+    public UserRepository userRepository() {
         return new CollectionUserRepository();
     }
 
     @Bean
-    public ChatRepository chatRepository(){
+    public ChatRepository chatRepository() {
         return new CollectionChatRepository();
     }
 
@@ -61,5 +69,4 @@ public class SpringConfig implements WebMvcConfigurer {
         resolver.setTemplateEngine(templateEngine());
         registry.viewResolver(resolver);
     }
-
 }

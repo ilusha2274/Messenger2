@@ -13,7 +13,7 @@ public class Chat {
     private Message lastMessage;
     //private String name;
 
-    public Chat(User user1, User user2,int chatId) {
+    public Chat(User user1, User user2, int chatId) {
         this.user1 = user1;
         this.user2 = user2;
         this.chatId = chatId;
@@ -22,6 +22,7 @@ public class Chat {
     public Message getLastMessage() {
         return lastMessage;
     }
+
     public void setLastMessage(Message lastMessage) {
         this.lastMessage = lastMessage;
     }
@@ -29,6 +30,7 @@ public class Chat {
     public User getUser1() {
         return user1;
     }
+
     public void setUser1(User user1) {
         this.user1 = user1;
     }
@@ -36,6 +38,7 @@ public class Chat {
     public User getUser2() {
         return user2;
     }
+
     public void setUser2(User user2) {
         this.user2 = user2;
     }
@@ -55,15 +58,15 @@ public class Chat {
     //    this.name = name;
     //}
 
-    public void addMessage (User user, String message){
+    public void addMessage(User user, String message) {
         LocalTime localTime = LocalTime.now();
         LocalDate localDate = LocalDate.now();
-        Message message1 = new Message(user,message,localDate,localTime);
+        Message message1 = new Message(user, message, localDate, localTime);
         lastMessage = message1;
         messages.add(message1);
     }
 
-    public Message getMessageByNumber (int i){
+    public Message getMessageByNumber(int i) {
         return messages.get(i);
     }
 }
