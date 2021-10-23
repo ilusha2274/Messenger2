@@ -32,8 +32,8 @@ public class SpringConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/**")
-                .addResourceLocations("/webapp/css/");
+        registry.addResourceHandler("/css/**")
+                .addResourceLocations("/resources/css/");
     }
 
     @Bean
