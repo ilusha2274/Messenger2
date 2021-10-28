@@ -1,18 +1,20 @@
 package spring;
 
+import filter.CharsetFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import javax.servlet.Filter;
 
 public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitializer {
 
-    //@Override
-    //protected Filter[] getServletFilters() {
-    //    return new Filter[]{new CharsetFilter()};
-    //}
+    @Override
+    protected Filter[] getServletFilters() {
+        return new Filter[]{new CharsetFilter()};
+    }
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[] { SecurityConfig.class };
+        return new Class[]{SecurityConfig.class};
     }
 
     @Override
