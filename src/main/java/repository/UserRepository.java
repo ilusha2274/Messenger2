@@ -4,11 +4,13 @@ import exception.PasswordMismatchException;
 import exception.WrongEmailException;
 import exception.WrongLoginPasswordException;
 
+import java.sql.SQLException;
+
 
 public interface UserRepository {
-    User addUser(User user, String twoPassword) throws PasswordMismatchException, WrongEmailException;
+    User addUser(User user, String twoPassword) throws PasswordMismatchException, WrongEmailException, SQLException;
 
-    void removeUser(User user);
+    void removeUserByEmail(String email);
 
     boolean findEmailUser(String email) throws WrongEmailException;
 

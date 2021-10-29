@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpSession;
+import java.sql.SQLException;
 
 @Controller
 public class RegistrationController {
@@ -36,7 +37,7 @@ public class RegistrationController {
             session.setAttribute("user", newUser);
             return "redirect:home";
 
-        } catch (WrongEmailException | PasswordMismatchException e) {
+        } catch (WrongEmailException | PasswordMismatchException | SQLException e) {
             model.addAttribute("exception", e.getMessage());
             return "registration";
         }
