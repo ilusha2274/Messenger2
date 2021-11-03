@@ -12,6 +12,7 @@ public class Chat {
     public List<Message> getMessages() {
         return messages;
     }
+
     public void setMessage(Message message) {
         messages.add(message);
     }
@@ -19,6 +20,7 @@ public class Chat {
     public List<User> getUsers() {
         return users;
     }
+
     public void setUsers(List<User> users) {
         this.users = users;
     }
@@ -26,6 +28,7 @@ public class Chat {
     public Message getLastMessage() {
         return lastMessage;
     }
+
     public void setLastMessage(Message lastMessage) {
         this.lastMessage = lastMessage;
     }
@@ -33,11 +36,12 @@ public class Chat {
     public int getChatId() {
         return chatId;
     }
+
     public void setChatId(int chatId) {
         this.chatId = chatId;
     }
 
-    public void addUserToChat (User user){
+    public void addUserToChat(User user) {
         users.add(user);
     }
 

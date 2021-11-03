@@ -4,10 +4,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import repository.Chat;
 import repository.Message;
-import repository.User;
 import repository.UserRepository;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 
 public class ChatMapper implements RowMapper<Chat> {
 
@@ -21,12 +21,12 @@ public class ChatMapper implements RowMapper<Chat> {
     static {
         try {
             Class.forName("org.postgresql.Driver");
-        }catch (ClassNotFoundException e){
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
         try {
-            connection = DriverManager.getConnection(URL,USERNAME,PASSWORD);
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -47,14 +47,14 @@ public class ChatMapper implements RowMapper<Chat> {
         return chat;
     }
 
-    private void chatUser (Chat chat){
+    private void chatUser(Chat chat) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users_chats WHERE chat_id=?");
-            preparedStatement.setInt(1,chat.getChatId());
+            preparedStatement.setInt(1, chat.getChatId());
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 chat.addUserToChat(userRepository.findUserById(resultSet.getInt("user_id")));
             }
         } catch (SQLException e) {
@@ -62,16 +62,19 @@ public class ChatMapper implements RowMapper<Chat> {
         }
     }
 
-    private void chatMessage (Chat chat){
+    private void chatMessage(Chat chat) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM messages WHERE chat_id=?");
-            preparedStatement.setInt(1,chat.getChatId());
+            preparedStatement.setInt(1, chat.getChatId());
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
+
+                LocalDateTime localDateTime = resultSet.getTimestamp("date_message").toLocalDateTime();
+
                 Message message = new Message(userRepository.findUserById(resultSet.getInt("user_id")),
-                        resultSet.getString("text_message"));
+                        resultSet.getString("text_message"), localDateTime);
                 chat.setMessage(message);
                 chat.setLastMessage(message);
             }

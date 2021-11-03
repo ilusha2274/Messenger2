@@ -1,16 +1,16 @@
 package repository;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class Message {
     private String text;
-    private Timestamp timestamp;
+    private LocalDateTime localDateTime;
     private User author;
 
-    public Message(User user, String text) {
+    public Message(User user, String text, LocalDateTime localDateTime) {
         this.text = text;
         author = user;
-        //this.timestamp = timestamp;
+        this.localDateTime = localDateTime;
     }
 
     public String getText() {
@@ -21,12 +21,12 @@ public class Message {
         this.text = text;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
     }
 
     public User getAuthor() {

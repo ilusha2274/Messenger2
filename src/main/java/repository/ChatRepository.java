@@ -9,5 +9,5 @@ public interface ChatRepository {
 
     Chat addChat(List<User> users);
 
-    void addMessageToChat (String text, User user, Chat chat);
+    void addMessageToChat(String text, User user, Chat chat);
 }

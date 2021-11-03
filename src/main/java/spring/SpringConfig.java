@@ -44,7 +44,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
     @Bean
     public ChatRepository chatRepository() {
-        return new DatabaseChatRepository(jdbcTemplate(),userRepository());
+        return new DatabaseChatRepository(jdbcTemplate(), userRepository());
     }
 
     @Bean
@@ -72,7 +72,7 @@ public class SpringConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public DataSource dataSource(){
+    public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
         dataSource.setDriverClassName("org.postgresql.Driver");
@@ -84,7 +84,7 @@ public class SpringConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate(){
+    public JdbcTemplate jdbcTemplate() {
         return new JdbcTemplate(dataSource());
     }
 }

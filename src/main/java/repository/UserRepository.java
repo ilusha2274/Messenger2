@@ -20,5 +20,5 @@ public interface UserRepository {
 
     User findUserByEmail(String email);
 
-    User findUserById (int id);
+    User findUserById(int id);
 }

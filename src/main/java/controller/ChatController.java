@@ -88,7 +88,7 @@ public class ChatController {
 
     private PrintChat fillingChat(User user, Chat chat) {
 
-        PrintChat printChat = new PrintChat("", -1, "", "");
+        PrintChat printChat;
         List<User> users = chat.getUsers();
 
         if (users.size() == 1) {
@@ -102,7 +102,7 @@ public class ChatController {
         }
 
         if (chat.getLastMessage() != null) {
-            //printChat.setDate(chat.getLastMessage().getLocalDate().format(dateTimeFormatterDate));
+            printChat.setDate(chat.getLastMessage().getLocalDateTime().format(dateTimeFormatterDate));
             printChat.setLastMessage(chat.getLastMessage().getText());
         }
 
@@ -113,13 +113,13 @@ public class ChatController {
 
         PrintMessage printMessage;
 
-//        String date = chat.getMessageByNumber(i).getLocalTime().format(dateTimeFormatterTime) + " | " +
-//                chat.getMessageByNumber(i).getLocalDate().format(dateTimeFormatterDate);
+        String date = chat.getMessageByNumber(i).getLocalDateTime().format(dateTimeFormatterTime) + " | " +
+                chat.getMessageByNumber(i).getLocalDateTime().format(dateTimeFormatterDate);
 
         if (chat.getMessageByNumber(i).getAuthor().getId() == user.getId()) {
-            printMessage = new PrintMessage(true, chat.getMessageByNumber(i).getText(), "");
+            printMessage = new PrintMessage(true, chat.getMessageByNumber(i).getText(), date);
         } else {
-            printMessage = new PrintMessage(false, chat.getMessageByNumber(i).getText(), "");
+            printMessage = new PrintMessage(false, chat.getMessageByNumber(i).getText(), date);
         }
 
         return printMessage;
