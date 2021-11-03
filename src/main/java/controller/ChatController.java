@@ -58,7 +58,7 @@ public class ChatController {
     @PostMapping("/chat/{id}")
     public String chat(String message, @SessionAttribute User user, @PathVariable Integer id) throws IOException {
 
-        chatRepository.getByNumberChat(id).addMessage(user, message);
+        chatRepository.addMessageToChat(message, user, chatRepository.getByNumberChat(id));
 
         return "redirect:" + id;
     }
@@ -88,15 +88,21 @@ public class ChatController {
 
     private PrintChat fillingChat(User user, Chat chat) {
 
-        PrintChat printChat;
+        PrintChat printChat = new PrintChat("", -1, "", "");
+        List<User> users = chat.getUsers();
 
-        if (user == chat.getUser1()) {
-            printChat = new PrintChat(chat.getUser2().getName(), chat.getChatId(), "", "");
+        if (users.size() == 1) {
+            printChat = new PrintChat(user.getName(), chat.getChatId(), "", "");
         } else {
-            printChat = new PrintChat(chat.getUser1().getName(), chat.getChatId(), "", "");
+            if (user == users.get(0)) {
+                printChat = new PrintChat(users.get(1).getName(), chat.getChatId(), "", "");
+            } else {
+                printChat = new PrintChat(user.getName(), chat.getChatId(), "", "");
+            }
         }
+
         if (chat.getLastMessage() != null) {
-            printChat.setDate(chat.getLastMessage().getLocalDate().format(dateTimeFormatterDate));
+            //printChat.setDate(chat.getLastMessage().getLocalDate().format(dateTimeFormatterDate));
             printChat.setLastMessage(chat.getLastMessage().getText());
         }
 
@@ -107,13 +113,13 @@ public class ChatController {
 
         PrintMessage printMessage;
 
-        String date = chat.getMessageByNumber(i).getLocalTime().format(dateTimeFormatterTime) + " | " +
-                chat.getMessageByNumber(i).getLocalDate().format(dateTimeFormatterDate);
+//        String date = chat.getMessageByNumber(i).getLocalTime().format(dateTimeFormatterTime) + " | " +
+//                chat.getMessageByNumber(i).getLocalDate().format(dateTimeFormatterDate);
 
-        if (chat.getMessageByNumber(i).getAuthor() == user) {
-            printMessage = new PrintMessage(true, chat.getMessageByNumber(i).getText(), date);
+        if (chat.getMessageByNumber(i).getAuthor().getId() == user.getId()) {
+            printMessage = new PrintMessage(true, chat.getMessageByNumber(i).getText(), "");
         } else {
-            printMessage = new PrintMessage(false, chat.getMessageByNumber(i).getText(), date);
+            printMessage = new PrintMessage(false, chat.getMessageByNumber(i).getText(), "");
         }
 
         return printMessage;

@@ -3,7 +3,7 @@ package spring;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
 import repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -18,7 +18,6 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import javax.sql.DataSource;
-import java.sql.DriverManager;
 
 @Configuration
 @ComponentScan(value = "controller")
@@ -45,7 +44,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
     @Bean
     public ChatRepository chatRepository() {
-        return new CollectionChatRepository();
+        return new DatabaseChatRepository(jdbcTemplate(),userRepository());
     }
 
     @Bean

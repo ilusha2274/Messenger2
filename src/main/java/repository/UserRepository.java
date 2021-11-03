@@ -19,4 +19,6 @@ public interface UserRepository {
     User logInUser(String email, String password) throws WrongLoginPasswordException;
 
     User findUserByEmail(String email);
+
+    User findUserById (int id);
 }

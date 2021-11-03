@@ -75,4 +75,10 @@ public class DatabaseUserRepository implements UserRepository {
         return jdbcTemplate.query("SELECT * FROM users WHERE user_email=?", new Object[]{email},
                 new UserMapper()).stream().findAny().orElse(null);
     }
+
+    @Override
+    public User findUserById (int id){
+        return jdbcTemplate.query("SELECT * FROM users WHERE user_id=?", new Object[]{id},
+                new UserMapper()).stream().findAny().orElse(null);
+    }
 }

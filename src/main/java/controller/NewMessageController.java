@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class NewMessageController {
 
@@ -33,8 +36,11 @@ public class NewMessageController {
     public String newMessage(String email, @SessionAttribute User user, Model model) {
 
         if (userRepository.findUserByEmail(email) != null) {
+            List<User> users = new ArrayList<>();
+            users.add(user);
+            users.add(userRepository.findUserByEmail(email));
             model.addAttribute("activePage", "CHAT");
-            chatRepository.addChat(user, userRepository.findUserByEmail(email));
+            chatRepository.addChat(users);
             return "redirect:chat";
         } else {
             model.addAttribute("activePage", "NEWMESSAGES");

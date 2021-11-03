@@ -7,5 +7,7 @@ public interface ChatRepository {
 
     Chat getByNumberChat(int i);
 
-    Chat addChat(User user1, User user2);
+    Chat addChat(List<User> users);
+
+    void addMessageToChat (String text, User user, Chat chat);
 }
