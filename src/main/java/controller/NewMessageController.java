@@ -35,16 +35,17 @@ public class NewMessageController {
     @PostMapping("/newmessage")
     public String newMessage(String email, @SessionAttribute User user, Model model) {
 
-        if (userRepository.findUserByEmail(email) != null) {
-            List<User> users = new ArrayList<>();
-            users.add(user);
-            users.add(userRepository.findUserByEmail(email));
+        User user2 = userRepository.findUserByEmail(email);
+
+        if (user2 != null) {
             model.addAttribute("activePage", "CHAT");
-            chatRepository.addChat(users);
+            model.addAttribute("title", user.getName());
+            chatRepository.addChat(user,user2);
             return "redirect:chat";
         } else {
             model.addAttribute("activePage", "NEWMESSAGES");
             model.addAttribute("exception", "Пользователь не найден");
+            model.addAttribute("title", user.getName());
             return "newmessage";
         }
     }

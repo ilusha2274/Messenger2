@@ -1,10 +1,10 @@
 package repository;
 
 import helper.ChatMapper;
+import helper.MessageMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,78 +12,61 @@ import java.util.List;
 public class DatabaseChatRepository implements ChatRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final UserRepository userRepository;
-    private static final String URL = "jdbc:postgresql://localhost:5432/first_bd";
-    private static final String USERNAME = "postgres";
-    private static final String PASSWORD = "14789";
-    private static Connection connection;
-
-    static {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Autowired
-    public DatabaseChatRepository(JdbcTemplate jdbcTemplate, UserRepository userRepository) {
+    public DatabaseChatRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.userRepository = userRepository;
     }
 
     @Override
     public List<Chat> findListChatByUser(User user) {
-        List<Chat> chats = new ArrayList<>();
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users_chats WHERE user_id=?");
-            preparedStatement.setInt(1, user.getId());
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                chats.add(getByNumberChat(resultSet.getInt("chat_id")));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return chats;
+        return jdbcTemplate.query("SELECT chats.*, u1.*, u2.*, messages.* " +
+                        " FROM chats " +
+                        " JOIN users u1 " +
+                        " ON chats.user1_id = u1.user_id " +
+                        " JOIN users u2 " +
+                        " ON chats.user2_id = u2.user_id " +
+                        " LEFT JOIN messages " +
+                        " ON chats.chat_last_message = messages.message_id " +
+                        " WHERE chats.user1_id=? OR chats.user2_id=? ",
+                new ChatMapper(),user.getId(),user.getId());
     }
 
     @Override
     public Chat getByNumberChat(int i) {
         return jdbcTemplate.query("SELECT * FROM chats WHERE chat_id=?",
                 new Object[]{i},
-                new ChatMapper(jdbcTemplate, userRepository)).stream().findAny().orElse(null);
+                new ChatMapper()).stream().findAny().orElse(null);
     }
 
     @Override
-    public Chat addChat(List<User> users) {
+    public Chat addChat(User user1, User user2) {
 
-        int id = jdbcTemplate.queryForObject("INSERT INTO chats DEFAULT VALUES RETURNING chat_id", Integer.class);
-        for (User user : users) {
-            jdbcTemplate.update("INSERT INTO users_chats (user_id,chat_id) VALUES(?,?)", user.getId(), id);
-        }
+        int id = jdbcTemplate.queryForObject("INSERT INTO chats (user1_id,user2_id) VALUES (?,?) RETURNING chat_id",
+                Integer.class,
+                user1.getId(),user2.getId());
         return null;
     }
 
     @Override
-    public void addMessageToChat(String text, User user, Chat chat) {
+    public void addMessageToChat(String text, User user, int chatId) {
 
         LocalDateTime localDateTime = LocalDateTime.now();
 
         int id = jdbcTemplate.queryForObject("INSERT INTO messages (text_message,chat_id,user_id,date_message) VALUES(?,?,?,?) RETURNING message_id",
                 Integer.class,
-                text, chat.getChatId(), user.getId(), java.sql.Timestamp.valueOf(localDateTime));
+                text, chatId, user.getId(), java.sql.Timestamp.valueOf(localDateTime));
 
-        jdbcTemplate.update("UPDATE chats SET chat_last_message=? WHERE chat_id=?", id, chat.getChatId());
+        jdbcTemplate.update("UPDATE chats SET chat_last_message=? WHERE chat_id=?", id, chatId);
 
+    }
+
+    @Override
+    public List<Message> getListMessageByNumberChat(int i) {
+        return jdbcTemplate.query(" SELECT users.*, messages.* " +
+                " FROM messages JOIN users " +
+                " ON messages.user_id = users.user_id " +
+                " WHERE messages.chat_id =? ",
+                new MessageMapper(),i);
     }
 }

@@ -3,6 +3,7 @@ package controller;
 import helper.PrintMessage;
 import helper.PrintChat;
 import repository.Chat;
+import repository.Message;
 import repository.User;
 import repository.ChatRepository;
 import org.springframework.stereotype.Controller;
@@ -44,7 +45,7 @@ public class ChatController {
     public String printChat(Model model, @SessionAttribute User user, @PathVariable Integer id) {
 
         ArrayList<PrintChat> printChats = printChats(user);
-        ArrayList<PrintMessage> printMessages = printMessages(chatRepository.getByNumberChat(id), user);
+        ArrayList<PrintMessage> printMessages = printMessages(chatRepository.getListMessageByNumberChat(id), user);
 
         model.addAttribute("activePage", "CHAT");
         model.addAttribute("title", user.getName());
@@ -58,7 +59,7 @@ public class ChatController {
     @PostMapping("/chat/{id}")
     public String chat(String message, @SessionAttribute User user, @PathVariable Integer id) throws IOException {
 
-        chatRepository.addMessageToChat(message, user, chatRepository.getByNumberChat(id));
+        chatRepository.addMessageToChat(message, user, id);
 
         return "redirect:" + id;
     }
@@ -75,12 +76,12 @@ public class ChatController {
         return printChats;
     }
 
-    private ArrayList<PrintMessage> printMessages(Chat chat, User user) {
+    private ArrayList<PrintMessage> printMessages(List<Message> messages, User user) {
 
         ArrayList<PrintMessage> printMessages = new ArrayList<>();
 
-        for (int i = 0; i < chat.getMessages().size(); i++) {
-            printMessages.add(fillingMessage(i, chat, user));
+        for (int i = 0; i < messages.size(); i++) {
+            printMessages.add(fillingMessage(messages.get(i), user));
         }
 
         return printMessages;
@@ -89,15 +90,16 @@ public class ChatController {
     private PrintChat fillingChat(User user, Chat chat) {
 
         PrintChat printChat;
-        List<User> users = chat.getUsers();
+        User user1 = chat.getUser1();
+        User user2 = chat.getUser2();
 
-        if (users.size() == 1) {
+        if (user1.getId() == user2.getId()) {
             printChat = new PrintChat(user.getName(), chat.getChatId(), "", "");
         } else {
-            if (user == users.get(0)) {
-                printChat = new PrintChat(users.get(1).getName(), chat.getChatId(), "", "");
+            if (user.getId() == user1.getId()) {
+                printChat = new PrintChat(user2.getName(), chat.getChatId(), "", "");
             } else {
-                printChat = new PrintChat(user.getName(), chat.getChatId(), "", "");
+                printChat = new PrintChat(user1.getName(), chat.getChatId(), "", "");
             }
         }
 
@@ -109,17 +111,17 @@ public class ChatController {
         return printChat;
     }
 
-    private PrintMessage fillingMessage(int i, Chat chat, User user) {
+    private PrintMessage fillingMessage(Message message, User user) {
 
         PrintMessage printMessage;
 
-        String date = chat.getMessageByNumber(i).getLocalDateTime().format(dateTimeFormatterTime) + " | " +
-                chat.getMessageByNumber(i).getLocalDateTime().format(dateTimeFormatterDate);
+        String date = message.getLocalDateTime().format(dateTimeFormatterTime) + " | " +
+                message.getLocalDateTime().format(dateTimeFormatterDate);
 
-        if (chat.getMessageByNumber(i).getAuthor().getId() == user.getId()) {
-            printMessage = new PrintMessage(true, chat.getMessageByNumber(i).getText(), date);
+        if (message.getAuthor().getId() == user.getId()) {
+            printMessage = new PrintMessage(true, message.getText(), date);
         } else {
-            printMessage = new PrintMessage(false, chat.getMessageByNumber(i).getText(), date);
+            printMessage = new PrintMessage(false, message.getText(), date);
         }
 
         return printMessage;

@@ -26,10 +26,12 @@ public class DatabaseUserRepository implements UserRepository {
     public User addUser(User user, String twoPassword) throws PasswordMismatchException, WrongEmailException {
         if (!(findEmailUser(user.getEmail())) && checkPassword(user.getPassword(), twoPassword)) {
 
-            jdbcTemplate.update("INSERT INTO users (user_name,user_email,user_password) VALUES(?,?,?)", user.getName(),
-                    user.getEmail(), user.getPassword());
+            int id = jdbcTemplate.queryForObject("INSERT INTO users (user_name,user_email,user_password) VALUES(?,?,?) RETURNING user_id",
+                    Integer.class,
+                    user.getName(), user.getEmail(), user.getPassword());
 
-            System.out.println(123);
+            user.setId(id);
+
             return user;
         }
         return null;

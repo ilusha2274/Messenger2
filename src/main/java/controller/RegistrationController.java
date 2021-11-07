@@ -30,11 +30,11 @@ public class RegistrationController {
     public String registration(HttpSession session, String email, String name, String password,
                                String twoPassword, Model model) {
 
-        User newUser = new User(-1, name, email, password);
+        User newUser = new User(-1,name, email, password);
 
         try {
-            userRepository.addUser(newUser, twoPassword);
-            session.setAttribute("user", newUser);
+            User user = userRepository.addUser(newUser, twoPassword);
+            session.setAttribute("user", user);
             return "redirect:home";
 
         } catch (WrongEmailException | PasswordMismatchException | SQLException e) {
