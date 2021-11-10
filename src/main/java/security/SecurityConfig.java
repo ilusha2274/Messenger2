@@ -19,18 +19,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception{
         auth.jdbcAuthentication().dataSource(dataSource)
-                .usersByUsernameQuery("select user_name,user_password, enabled from users where user_name=?");
+                .usersByUsernameQuery("select user_email,user_password, enabled from users where user_email=?")
+                .authoritiesByUsernameQuery("select user_email, authority from authorities where user_email=?");
 //                .passwordEncoder(new BCryptPasswordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/home/**").authenticated()
+                .antMatchers("/home").hasAuthority("USER")
                 .antMatchers("/registration").permitAll().anyRequest().anonymous()
                 .and()
                 .formLogin().loginPage("/login").usernameParameter("email").permitAll()
-                .defaultSuccessUrl("/home")
+                //.defaultSuccessUrl("/home")
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/exit", "POST"))
                 .invalidateHttpSession(true)
