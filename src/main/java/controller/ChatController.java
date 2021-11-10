@@ -89,19 +89,7 @@ public class ChatController {
 
     private PrintChat fillingChat(User user, Chat chat) {
 
-        PrintChat printChat;
-        User user1 = chat.getUser1();
-        User user2 = chat.getUser2();
-
-        if (user1.getId() == user2.getId()) {
-            printChat = new PrintChat(user.getName(), chat.getChatId(), "", "");
-        } else {
-            if (user.getId() == user1.getId()) {
-                printChat = new PrintChat(user2.getName(), chat.getChatId(), "", "");
-            } else {
-                printChat = new PrintChat(user1.getName(), chat.getChatId(), "", "");
-            }
-        }
+        PrintChat printChat = new PrintChat(chat.getNameChat(), chat.getChatId(), "", "");
 
         if (chat.getLastMessage() != null) {
             printChat.setDate(chat.getLastMessage().getLocalDateTime().format(dateTimeFormatterDate));
@@ -118,7 +106,7 @@ public class ChatController {
         String date = message.getLocalDateTime().format(dateTimeFormatterTime) + " | " +
                 message.getLocalDateTime().format(dateTimeFormatterDate);
 
-        if (message.getAuthor().getId() == user.getId()) {
+        if (message.getIdAuthor().equals(user.getId())) {
             printMessage = new PrintMessage(true, message.getText(), date);
         } else {
             printMessage = new PrintMessage(false, message.getText(), date);

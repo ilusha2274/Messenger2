@@ -19,9 +19,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception{
         auth.jdbcAuthentication().dataSource(dataSource)
-                .usersByUsernameQuery("select user_name,user_password, enabled from users where user_name=?")
-                .authoritiesByUsernameQuery("")
-                .passwordEncoder(new BCryptPasswordEncoder());
+                .usersByUsernameQuery("select user_name,user_password, enabled from users where user_name=?");
+//                .passwordEncoder(new BCryptPasswordEncoder());
     }
 
     @Override
@@ -30,8 +29,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/home/**").authenticated()
                 .antMatchers("/registration").permitAll().anyRequest().anonymous()
                 .and()
-                .formLogin().loginPage("/login").permitAll()
-                .defaultSuccessUrl("/home/**")
+                .formLogin().loginPage("/login").usernameParameter("email").permitAll()
+                .defaultSuccessUrl("/home")
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/exit", "POST"))
                 .invalidateHttpSession(true)

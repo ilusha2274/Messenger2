@@ -20,16 +20,38 @@ public class DatabaseChatRepository implements ChatRepository {
 
     @Override
     public List<Chat> findListChatByUser(User user) {
-        return jdbcTemplate.query("SELECT chats.*, u1.*, u2.*, messages.* " +
+        return jdbcTemplate.query("SELECT chats.chat_id, messages.text_message, messages.date_message, users.user_name  " +
                         " FROM chats " +
-                        " JOIN users u1 " +
-                        " ON chats.user1_id = u1.user_id " +
-                        " JOIN users u2 " +
-                        " ON chats.user2_id = u2.user_id " +
                         " LEFT JOIN messages " +
                         " ON chats.chat_last_message = messages.message_id " +
-                        " WHERE chats.user1_id=? OR chats.user2_id=? ",
-                new ChatMapper(),user.getId(),user.getId());
+                        " JOIN users_chats uc1 " +
+                        " ON chats.chat_id = uc1.chat_id " +
+                        " JOIN users_chats uc2 " +
+                        " ON chats.chat_id = uc2.chat_id " +
+                        " AND uc2.user_id != users.user_id = ? " +
+                        " JOIN users " +
+                        " ON uc2.user_id = users.user_id " +
+                        " WHERE chats.chat_type = 'private' " +
+                        " AND uc1.user_id = users.user_id = ? " +
+                        " UNION " +
+                        " SELECT chats.chat_id, messages.text_message, messages.date_message, chats.name_chat " +
+                        " FROM chats " +
+                        " LEFT JOIN messages " +
+                        " ON chats.chat_last_message = messages.message_id " +
+                        " JOIN users_chats " +
+                        " ON chats.chat_id = users_chats.chat_id " +
+                        " WHERE users_chats.user_id = users.user_id = ? " +
+                        " AND chats.chat_type = 'group' " +
+                        " UNION " +
+                        " SELECT chats.chat_id, messages.text_message, messages.date_message, chats.chat_type " +
+                        " FROM chats " +
+                        " LEFT JOIN messages " +
+                        " ON chats.chat_last_message = messages.message_id " +
+                        " JOIN users_chats " +
+                        " ON chats.chat_id = users_chats.chat_id " +
+                        " WHERE users_chats.user_id = users.user_id = ? " +
+                        " AND chats.chat_type = 'saved' ",
+                new ChatMapper(),user.getId(),user.getId(),user.getId(),user.getId());
     }
 
     @Override
@@ -40,11 +62,13 @@ public class DatabaseChatRepository implements ChatRepository {
     }
 
     @Override
-    public Chat addChat(User user1, User user2) {
+    public Chat addChat(List<User> users,String chatType) {
 
-        int id = jdbcTemplate.queryForObject("INSERT INTO chats (user1_id,user2_id) VALUES (?,?) RETURNING chat_id",
-                Integer.class,
-                user1.getId(),user2.getId());
+        int id = jdbcTemplate.queryForObject("INSERT INTO chats (group_chat) VALUES(?) RETURNING chat_id",
+                Integer.class,chatType);
+        for (int i =0;i<users.size();i++){
+            jdbcTemplate.update("INSERT INTO users_chats (user_id,chat_id) VALUES(?,?)", users.get(i).getId(), id);
+        }
         return null;
     }
 
@@ -63,10 +87,7 @@ public class DatabaseChatRepository implements ChatRepository {
 
     @Override
     public List<Message> getListMessageByNumberChat(int i) {
-        return jdbcTemplate.query(" SELECT users.*, messages.* " +
-                " FROM messages JOIN users " +
-                " ON messages.user_id = users.user_id " +
-                " WHERE messages.chat_id =? ",
+        return jdbcTemplate.query(" SELECT * FROM messages WHERE chat_id=? ",
                 new MessageMapper(),i);
     }
 }

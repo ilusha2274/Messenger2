@@ -2,6 +2,7 @@ package spring;
 
 import filter.CharsetFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+import security.SecurityConfig;
 
 import javax.servlet.Filter;
 
@@ -14,12 +15,12 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{RootConfiguration.class};
+        return new Class[]{};
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{SpringConfig.class};
+        return new Class[]{SpringConfig.class, SecurityConfig.class};
     }
 
     @Override

@@ -36,11 +36,14 @@ public class NewMessageController {
     public String newMessage(String email, @SessionAttribute User user, Model model) {
 
         User user2 = userRepository.findUserByEmail(email);
+        List<User> users = new ArrayList<>();
+        users.add(user);
+        users.add(user2);
 
         if (user2 != null) {
             model.addAttribute("activePage", "CHAT");
             model.addAttribute("title", user.getName());
-            chatRepository.addChat(user,user2);
+            chatRepository.addChat(users, "private");
             return "redirect:chat";
         } else {
             model.addAttribute("activePage", "NEWMESSAGES");

@@ -30,7 +30,7 @@ public class RegistrationController {
     public String registration(HttpSession session, String email, String name, String password,
                                String twoPassword, Model model) {
 
-        User newUser = new User(-1,name, email, password);
+        User newUser = new User(name, email, password);
 
         try {
             User user = userRepository.addUser(newUser, twoPassword);

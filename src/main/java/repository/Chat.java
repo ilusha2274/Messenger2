@@ -6,9 +6,9 @@ import java.util.List;
 public class Chat {
     private int chatId;
     private List<Message> messages = new ArrayList<>();
-    private User user1;
-    private User user2;
+    private List<User> users = new ArrayList<>();
     private Message lastMessage;
+    private String nameChat;
 
     public List<Message> getMessages() {
         return messages;
@@ -26,20 +26,12 @@ public class Chat {
         this.lastMessage = lastMessage;
     }
 
-    public User getUser1() {
-        return user1;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setUser1(User user1) {
-        this.user1 = user1;
-    }
-
-    public User getUser2() {
-        return user2;
-    }
-
-    public void setUser2(User user2) {
-        this.user2 = user2;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public int getChatId() {
@@ -52,5 +44,13 @@ public class Chat {
 
     public Message getMessageByNumber(int i) {
         return messages.get(i);
+    }
+
+    public String getNameChat() {
+        return nameChat;
+    }
+
+    public void setNameChat(String nameChat) {
+        this.nameChat = nameChat;
     }
 }

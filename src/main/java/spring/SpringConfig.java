@@ -38,13 +38,13 @@ public class SpringConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public UserRepository userRepository() {
-        return new DatabaseUserRepository(jdbcTemplate());
+    public UserRepository userRepository(JdbcTemplate jdbcTemplate) {
+        return new DatabaseUserRepository(jdbcTemplate);
     }
 
     @Bean
-    public ChatRepository chatRepository() {
-        return new DatabaseChatRepository(jdbcTemplate());
+    public ChatRepository chatRepository(JdbcTemplate jdbcTemplate) {
+        return new DatabaseChatRepository(jdbcTemplate);
     }
 
     @Bean

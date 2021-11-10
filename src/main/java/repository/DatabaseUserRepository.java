@@ -26,9 +26,9 @@ public class DatabaseUserRepository implements UserRepository {
     public User addUser(User user, String twoPassword) throws PasswordMismatchException, WrongEmailException {
         if (!(findEmailUser(user.getEmail())) && checkPassword(user.getPassword(), twoPassword)) {
 
-            int id = jdbcTemplate.queryForObject("INSERT INTO users (user_name,user_email,user_password) VALUES(?,?,?) RETURNING user_id",
+            int id = jdbcTemplate.queryForObject("INSERT INTO users (user_name,user_email,user_password,enabled) VALUES(?,?,?,?) RETURNING user_id",
                     Integer.class,
-                    user.getName(), user.getEmail(), user.getPassword());
+                    user.getName(), user.getEmail(), user.getPassword(),user.isEnabled());
 
             user.setId(id);
 
