@@ -1,5 +1,7 @@
 package repository;
 
+import helper.PrintChat;
+
 import java.util.List;
 
 public interface ChatRepository {
@@ -12,4 +14,6 @@ public interface ChatRepository {
     void addMessageToChat(String text, User user, int chatId);
 
     List<Message> getListMessageByNumberChat (int i);
+
+    List<PrintChat> getPrintChats (User user);
 }

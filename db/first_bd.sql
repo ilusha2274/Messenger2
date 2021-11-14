@@ -5,8 +5,7 @@
 -- Dumped from database version 14.0
 -- Dumped by pg_dump version 14.0
 
--- Started on 2021-11-11 00:03:41
-
+-- Started on 2021-11-15 00:16:39
 
 SET client_encoding = 'UTF8';
 
@@ -98,7 +97,7 @@ CREATE TABLE public.users (
     user_id integer NOT NULL,
     user_name text NOT NULL,
     user_email character varying(30) NOT NULL,
-    user_password character varying(20) NOT NULL,
+    user_password text NOT NULL,
     enabled boolean NOT NULL
 );
 
@@ -134,48 +133,12 @@ ALTER TABLE public.users ALTER COLUMN user_id ADD GENERATED ALWAYS AS IDENTITY (
 
 
 --
--- TOC entry 3342 (class 0 OID 16648)
--- Dependencies: 216
--- Data for Name: authorities; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
---
--- TOC entry 3336 (class 0 OID 16464)
--- Dependencies: 210
--- Data for Name: chats; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- TOC entry 3337 (class 0 OID 16471)
--- Dependencies: 211
--- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- TOC entry 3335 (class 0 OID 16459)
--- Dependencies: 209
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
---
--- TOC entry 3341 (class 0 OID 16627)
--- Dependencies: 215
--- Data for Name: users_chats; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
---
 -- TOC entry 3348 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: chats_chat_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.chats_chat_id_seq', 15, true);
+SELECT pg_catalog.setval('public.chats_chat_id_seq', 16, true);
 
 
 --
@@ -184,7 +147,7 @@ SELECT pg_catalog.setval('public.chats_chat_id_seq', 15, true);
 -- Name: messages_message_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.messages_message_id_seq', 14, true);
+SELECT pg_catalog.setval('public.messages_message_id_seq', 15, true);
 
 
 --
@@ -193,7 +156,7 @@ SELECT pg_catalog.setval('public.messages_message_id_seq', 14, true);
 -- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_user_id_seq', 6, true);
+SELECT pg_catalog.setval('public.users_user_id_seq', 7, true);
 
 
 --
@@ -286,7 +249,7 @@ ALTER TABLE ONLY public.users_chats
     ADD CONSTRAINT users_chats_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) NOT VALID;
 
 
--- Completed on 2021-11-11 00:03:42
+-- Completed on 2021-11-15 00:16:39
 
 --
 -- PostgreSQL database dump complete

@@ -2,7 +2,6 @@ package helper;
 
 import org.springframework.jdbc.core.RowMapper;
 import repository.Message;
-import repository.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

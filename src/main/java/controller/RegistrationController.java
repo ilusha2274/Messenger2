@@ -1,5 +1,6 @@
 package controller;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import repository.User;
 import exception.PasswordMismatchException;
 import exception.WrongEmailException;
@@ -26,6 +27,7 @@ public class RegistrationController {
         return "registration";
     }
 
+    // Не добавляет в сессию а перекидывает налогин.
     @PostMapping("/registration")
     public String registration(HttpSession session, String email, String name, String password,
                                String twoPassword, Model model) {

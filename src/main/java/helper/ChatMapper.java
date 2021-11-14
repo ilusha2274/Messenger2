@@ -13,7 +13,7 @@ public class ChatMapper implements RowMapper<Chat> {
     public Chat mapRow(ResultSet resultSet, int i) throws SQLException {
         Chat chat = new Chat();
         chat.setChatId(resultSet.getInt("chat_id"));
-        chat.setNameChat(resultSet.getString(3));
+        chat.setNameChat(resultSet.getString(4));
 
         if (resultSet.getString("text_message") != null){
                 LocalDateTime localDateTime = resultSet.getTimestamp("date_message").toLocalDateTime();

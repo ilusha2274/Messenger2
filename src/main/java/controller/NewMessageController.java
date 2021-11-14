@@ -1,5 +1,6 @@
 package controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import repository.User;
 import repository.ChatRepository;
 import repository.UserRepository;
@@ -24,7 +25,7 @@ public class NewMessageController {
     }
 
     @GetMapping("/newmessage")
-    public String printHewMessage(@SessionAttribute User user, Model model) {
+    public String printHewMessage(@AuthenticationPrincipal User user, Model model) {
 
         model.addAttribute("activePage", "NEWMESSAGES");
         model.addAttribute("title", user.getName());
@@ -33,7 +34,7 @@ public class NewMessageController {
     }
 
     @PostMapping("/newmessage")
-    public String newMessage(String email, @SessionAttribute User user, Model model) {
+    public String newMessage(String email, @AuthenticationPrincipal User user, Model model) {
 
         User user2 = userRepository.findUserByEmail(email);
         List<User> users = new ArrayList<>();

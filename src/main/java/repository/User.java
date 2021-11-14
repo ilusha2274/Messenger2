@@ -1,14 +1,21 @@
 package repository;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-public class User {
+import java.util.*;
+
+public class User implements UserDetails {
     private Integer id;
     private String name;
     private String email;
     private String password;
     private boolean enabled;
+    private String role;
+
+    private static final String ROLE_USER = "USER";
+
     private List<Chat> chats = new ArrayList<>();
 
     public Integer getId() {
@@ -50,12 +57,21 @@ public class User {
         this.enabled = enabled;
     }
 
-    public User(int id, String name, String email, String password) {
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public User(int id, String name, String email, String password, boolean enabled) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
-        enabled = true;
+        this.enabled = enabled;
+        role = "USER";
     }
 
     public User (String name, String email, String password){
@@ -63,5 +79,31 @@ public class User {
         this.email = email;
         this.password = password;
         enabled = true;
+        role = "USER";
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority(ROLE_USER));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 }

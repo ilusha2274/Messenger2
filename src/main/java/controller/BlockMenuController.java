@@ -1,5 +1,6 @@
 package controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import repository.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +13,7 @@ import javax.servlet.http.HttpSession;
 public class BlockMenuController {
 
     @GetMapping("/home")
-    public String printHome(@SessionAttribute User user, Model model) {
+    public String printHome(@AuthenticationPrincipal User user, Model model) {
 
         model.addAttribute("title", user.getName());
 
@@ -20,7 +21,7 @@ public class BlockMenuController {
     }
 
     @GetMapping("/profile")
-    public String printProfile(@SessionAttribute User user, Model model) {
+    public String printProfile(@AuthenticationPrincipal User user, Model model) {
 
         model.addAttribute("activePage", "PROFILE");
         model.addAttribute("title", user.getName());
@@ -29,7 +30,7 @@ public class BlockMenuController {
     }
 
     @GetMapping("/settings")
-    public String printSettings(@SessionAttribute User user, Model model) {
+    public String printSettings(@AuthenticationPrincipal User user, Model model) {
 
         model.addAttribute("activePage", "SETTINGS");
         model.addAttribute("title", user.getName());

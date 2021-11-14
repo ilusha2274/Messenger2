@@ -2,6 +2,7 @@ package controller;
 
 import helper.PrintMessage;
 import helper.PrintChat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import repository.Chat;
 import repository.Message;
 import repository.User;
@@ -29,9 +30,9 @@ public class ChatController {
 
 
     @GetMapping("/chat")
-    public String printChatList(Model model, @SessionAttribute User user) {
+    public String printChatList(Model model, @AuthenticationPrincipal User user) {
 
-        ArrayList<PrintChat> printChats = printChats(user);
+        ArrayList<PrintChat> printChats = (ArrayList<PrintChat>) chatRepository.getPrintChats(user);
 
         model.addAttribute("printChats", printChats);
         model.addAttribute("title", user.getName());
@@ -42,9 +43,9 @@ public class ChatController {
     }
 
     @GetMapping("/chat/{id}")
-    public String printChat(Model model, @SessionAttribute User user, @PathVariable Integer id) {
+    public String printChat(Model model, @AuthenticationPrincipal User user, @PathVariable Integer id) {
 
-        ArrayList<PrintChat> printChats = printChats(user);
+        ArrayList<PrintChat> printChats = (ArrayList<PrintChat>) chatRepository.getPrintChats(user);
         ArrayList<PrintMessage> printMessages = printMessages(chatRepository.getListMessageByNumberChat(id), user);
 
         model.addAttribute("activePage", "CHAT");
@@ -57,23 +58,11 @@ public class ChatController {
     }
 
     @PostMapping("/chat/{id}")
-    public String chat(String message, @SessionAttribute User user, @PathVariable Integer id) throws IOException {
+    public String chat(String message, @AuthenticationPrincipal User user, @PathVariable Integer id) throws IOException {
 
         chatRepository.addMessageToChat(message, user, id);
 
         return "redirect:" + id;
-    }
-
-    private ArrayList<PrintChat> printChats(User user) {
-
-        ArrayList<PrintChat> printChats = new ArrayList<>();
-        List<Chat> chats = chatRepository.findListChatByUser(user);
-
-        for (Chat chat : chats) {
-            printChats.add(fillingChat(user, chat));
-        }
-
-        return printChats;
     }
 
     private ArrayList<PrintMessage> printMessages(List<Message> messages, User user) {
@@ -85,18 +74,6 @@ public class ChatController {
         }
 
         return printMessages;
-    }
-
-    private PrintChat fillingChat(User user, Chat chat) {
-
-        PrintChat printChat = new PrintChat(chat.getNameChat(), chat.getChatId(), "", "");
-
-        if (chat.getLastMessage() != null) {
-            printChat.setDate(chat.getLastMessage().getLocalDateTime().format(dateTimeFormatterDate));
-            printChat.setLastMessage(chat.getLastMessage().getText());
-        }
-
-        return printChat;
     }
 
     private PrintMessage fillingMessage(Message message, User user) {

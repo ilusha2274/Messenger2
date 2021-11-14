@@ -2,6 +2,9 @@ package spring;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import repository.*;
@@ -45,6 +48,11 @@ public class SpringConfig implements WebMvcConfigurer {
     @Bean
     public ChatRepository chatRepository(JdbcTemplate jdbcTemplate) {
         return new DatabaseChatRepository(jdbcTemplate);
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate){
+        return new DatabaseUserRepository(jdbcTemplate);
     }
 
     @Bean
