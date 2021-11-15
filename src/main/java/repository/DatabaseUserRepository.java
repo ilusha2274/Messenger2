@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class DatabaseUserRepository implements UserRepository, UserDetailsServic
 
     @Override
     public User addUser(User user, String twoPassword) throws PasswordMismatchException, WrongEmailException {
+
         if (!(findEmailUser(user.getEmail())) && checkPassword(user.getPassword(), twoPassword)) {
 
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
