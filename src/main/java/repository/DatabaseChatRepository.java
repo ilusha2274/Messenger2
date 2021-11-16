@@ -2,13 +2,10 @@ package repository;
 
 import helper.ChatMapper;
 import helper.MessageMapper;
-import helper.PrintChat;
-import helper.PrintChatMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseChatRepository implements ChatRepository {
@@ -22,7 +19,7 @@ public class DatabaseChatRepository implements ChatRepository {
 
     @Override
     public List<Chat> findListChatByUser(User user) {
-        return jdbcTemplate.query("SELECT chats.chat_id, messages.text_message, messages.date_message, users.user_name  " +
+        return jdbcTemplate.query("SELECT chats.chat_id, messages.text_message, messages.date_message, users.user_name AS username " +
                         " FROM chats " +
                         " LEFT JOIN messages " +
                         " ON chats.chat_last_message = messages.message_id " +
@@ -30,30 +27,30 @@ public class DatabaseChatRepository implements ChatRepository {
                         " ON chats.chat_id = uc1.chat_id " +
                         " JOIN users_chats uc2 " +
                         " ON chats.chat_id = uc2.chat_id " +
-                        " AND uc2.user_id != users.user_id = ? " +
+                        " AND uc2.user_id != " + user.getId() +
                         " JOIN users " +
                         " ON uc2.user_id = users.user_id " +
                         " WHERE chats.chat_type = 'private' " +
-                        " AND uc1.user_id = users.user_id = ? " +
+                        " AND uc1.user_id = " + user.getId() +
                         " UNION " +
-                        " SELECT chats.chat_id, messages.text_message, messages.date_message, chats.name_chat " +
+                        " SELECT chats.chat_id, messages.text_message, messages.date_message, chats.name_chat AS username " +
                         " FROM chats " +
                         " LEFT JOIN messages " +
                         " ON chats.chat_last_message = messages.message_id " +
                         " JOIN users_chats " +
                         " ON chats.chat_id = users_chats.chat_id " +
-                        " WHERE users_chats.user_id = users.user_id = ? " +
+                        " WHERE users_chats.user_id = " + user.getId() +
                         " AND chats.chat_type = 'group' " +
                         " UNION " +
-                        " SELECT chats.chat_id, messages.text_message, messages.date_message, chats.chat_type " +
+                        " SELECT chats.chat_id, messages.text_message, messages.date_message, chats.chat_type AS username " +
                         " FROM chats " +
                         " LEFT JOIN messages " +
                         " ON chats.chat_last_message = messages.message_id " +
                         " JOIN users_chats " +
                         " ON chats.chat_id = users_chats.chat_id " +
-                        " WHERE users_chats.user_id = users.user_id = ? " +
+                        " WHERE users_chats.user_id = " + user.getId() +
                         " AND chats.chat_type = 'saved' ",
-                new ChatMapper(),user.getId(),user.getId(),user.getId(),user.getId());
+                new ChatMapper());
     }
 
     // Не используется. Надо поменять
@@ -92,41 +89,5 @@ public class DatabaseChatRepository implements ChatRepository {
     public List<Message> getListMessageByNumberChat(int i) {
         return jdbcTemplate.query(" SELECT * FROM messages WHERE chat_id=? ",
                 new MessageMapper(),i);
-    }
-
-    @Override
-    public List<PrintChat> getPrintChats (User user){
-        return jdbcTemplate.query("SELECT chats.chat_id, messages.text_message, messages.date_message, users.user_name  " +
-                        " FROM chats " +
-                        " LEFT JOIN messages " +
-                        " ON chats.chat_last_message = messages.message_id " +
-                        " JOIN users_chats uc1 " +
-                        " ON chats.chat_id = uc1.chat_id " +
-                        " JOIN users_chats uc2 " +
-                        " ON chats.chat_id = uc2.chat_id " +
-                        " AND uc2.user_id != " + user.getId() +
-                        " JOIN users " +
-                        " ON uc2.user_id = users.user_id " +
-                        " WHERE chats.chat_type = 'private' " +
-                        " AND uc1.user_id = " + user.getId() +
-                        " UNION " +
-                        " SELECT chats.chat_id, messages.text_message, messages.date_message, chats.name_chat " +
-                        " FROM chats " +
-                        " LEFT JOIN messages " +
-                        " ON chats.chat_last_message = messages.message_id " +
-                        " JOIN users_chats " +
-                        " ON chats.chat_id = users_chats.chat_id " +
-                        " WHERE users_chats.user_id = " + user.getId() +
-                        " AND chats.chat_type = 'group' " +
-                        " UNION " +
-                        " SELECT chats.chat_id, messages.text_message, messages.date_message, chats.chat_type " +
-                        " FROM chats " +
-                        " LEFT JOIN messages " +
-                        " ON chats.chat_last_message = messages.message_id " +
-                        " JOIN users_chats " +
-                        " ON chats.chat_id = users_chats.chat_id " +
-                        " WHERE users_chats.user_id = " + user.getId() +
-                        " AND chats.chat_type = 'saved' ",
-                new PrintChatMapper());
     }
 }

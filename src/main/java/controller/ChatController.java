@@ -1,7 +1,6 @@
 package controller;
 
 import helper.PrintMessage;
-import helper.PrintChat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import repository.Chat;
 import repository.Message;
@@ -32,9 +31,9 @@ public class ChatController {
     @GetMapping("/chat")
     public String printChatList(Model model, @AuthenticationPrincipal User user) {
 
-        ArrayList<PrintChat> printChats = (ArrayList<PrintChat>) chatRepository.getPrintChats(user);
+        ArrayList<Chat> chats = (ArrayList<Chat>) chatRepository.findListChatByUser(user);
 
-        model.addAttribute("printChats", printChats);
+        model.addAttribute("printChats", chats);
         model.addAttribute("title", user.getName());
         model.addAttribute("activePage", "CHAT");
         model.addAttribute("active", false);
@@ -45,13 +44,13 @@ public class ChatController {
     @GetMapping("/chat/{id}")
     public String printChat(Model model, @AuthenticationPrincipal User user, @PathVariable Integer id) {
 
-        ArrayList<PrintChat> printChats = (ArrayList<PrintChat>) chatRepository.getPrintChats(user);
+        ArrayList<Chat> chats = (ArrayList<Chat>) chatRepository.findListChatByUser(user);
         ArrayList<PrintMessage> printMessages = printMessages(chatRepository.getListMessageByNumberChat(id), user);
 
         model.addAttribute("activePage", "CHAT");
         model.addAttribute("title", user.getName());
         model.addAttribute("printMessages", printMessages);
-        model.addAttribute("printChats", printChats);
+        model.addAttribute("printChats", chats);
         model.addAttribute("active", true);
 
         return "chat";

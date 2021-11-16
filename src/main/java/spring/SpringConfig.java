@@ -41,8 +41,8 @@ public class SpringConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public UserRepository userRepository(JdbcTemplate jdbcTemplate) {
-        return new DatabaseUserRepository(jdbcTemplate);
+    public UserRepository userRepository(JdbcTemplate jdbcTemplate,PasswordEncoder passwordEncoder) {
+        return new DatabaseUserRepository(jdbcTemplate,passwordEncoder);
     }
 
     @Bean
@@ -51,8 +51,8 @@ public class SpringConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate){
-        return new DatabaseUserRepository(jdbcTemplate);
+    public UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate,PasswordEncoder passwordEncoder){
+        return new DatabaseUserRepository(jdbcTemplate,passwordEncoder);
     }
 
     @Bean
@@ -94,5 +94,10 @@ public class SpringConfig implements WebMvcConfigurer {
     @Bean
     public JdbcTemplate jdbcTemplate() {
         return new JdbcTemplate(dataSource());
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 }

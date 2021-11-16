@@ -9,11 +9,6 @@
 
 SET client_encoding = 'UTF8';
 
-
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
-
 --
 -- TOC entry 216 (class 1259 OID 16648)
 -- Name: authorities; Type: TABLE; Schema: public; Owner: postgres
@@ -97,7 +92,7 @@ CREATE TABLE public.users (
     user_id integer NOT NULL,
     user_name text NOT NULL,
     user_email character varying(30) NOT NULL,
-    user_password text NOT NULL,
+    user_password character varying(60) NOT NULL,
     enabled boolean NOT NULL
 );
 
@@ -130,34 +125,6 @@ ALTER TABLE public.users ALTER COLUMN user_id ADD GENERATED ALWAYS AS IDENTITY (
     NO MAXVALUE
     CACHE 1
 );
-
-
---
--- TOC entry 3348 (class 0 OID 0)
--- Dependencies: 213
--- Name: chats_chat_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.chats_chat_id_seq', 16, true);
-
-
---
--- TOC entry 3349 (class 0 OID 0)
--- Dependencies: 212
--- Name: messages_message_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.messages_message_id_seq', 15, true);
-
-
---
--- TOC entry 3350 (class 0 OID 0)
--- Dependencies: 214
--- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.users_user_id_seq', 7, true);
-
 
 --
 -- TOC entry 3189 (class 2606 OID 16661)

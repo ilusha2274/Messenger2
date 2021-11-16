@@ -9,6 +9,31 @@ public class Chat {
     private List<User> users = new ArrayList<>();
     private Message lastMessage;
     private String nameChat;
+    private String dateLastMessage;
+    private String textLastMessage;
+
+    public Chat(String nameChat, int chatId, String dateLastMessage, String textLastMessage) {
+        this.nameChat = nameChat;
+        this.chatId = chatId;
+        this.dateLastMessage = dateLastMessage;
+        this.textLastMessage = textLastMessage;
+    }
+
+    public String getDateLastMessage() {
+        return dateLastMessage;
+    }
+
+    public void setDateLastMessage(String dateLastMessage) {
+        this.dateLastMessage = dateLastMessage;
+    }
+
+    public String getTextLastMessage() {
+        return textLastMessage;
+    }
+
+    public void setTextLastMessage(String textLastMessage) {
+        this.textLastMessage = textLastMessage;
+    }
 
     public List<Message> getMessages() {
         return messages;

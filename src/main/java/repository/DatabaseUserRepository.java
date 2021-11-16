@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -18,10 +19,12 @@ import java.util.List;
 public class DatabaseUserRepository implements UserRepository, UserDetailsService {
 
     private final JdbcTemplate jdbcTemplate;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public DatabaseUserRepository(JdbcTemplate jdbcTemplate) {
+    public DatabaseUserRepository(JdbcTemplate jdbcTemplate,PasswordEncoder passwordEncoder) {
         this.jdbcTemplate = jdbcTemplate;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> index() {
@@ -33,8 +36,7 @@ public class DatabaseUserRepository implements UserRepository, UserDetailsServic
 
         if (!(findEmailUser(user.getEmail())) && checkPassword(user.getPassword(), twoPassword)) {
 
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            String password = encoder.encode(user.getPassword());
+            String password = passwordEncoder.encode(user.getPassword());
 
             int id = jdbcTemplate.queryForObject("INSERT INTO users (user_name,user_email,user_password,enabled) VALUES(?,?,?,?) RETURNING user_id",
                     Integer.class,
