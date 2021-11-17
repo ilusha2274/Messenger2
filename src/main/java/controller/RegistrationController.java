@@ -1,6 +1,5 @@
 package controller;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import repository.User;
 import exception.PasswordMismatchException;
 import exception.WrongEmailException;

@@ -6,13 +6,12 @@ import exception.WrongLoginPasswordException;
 import helper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
+
 
 import java.util.List;
 
@@ -20,34 +19,46 @@ public class DatabaseUserRepository implements UserRepository, UserDetailsServic
 
     private final JdbcTemplate jdbcTemplate;
     private final PasswordEncoder passwordEncoder;
+    private final TransactionTemplate transactionTemplate;
 
     @Autowired
-    public DatabaseUserRepository(JdbcTemplate jdbcTemplate,PasswordEncoder passwordEncoder) {
+    public DatabaseUserRepository(JdbcTemplate jdbcTemplate,PasswordEncoder passwordEncoder,TransactionTemplate transactionTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.passwordEncoder = passwordEncoder;
+        this.transactionTemplate = transactionTemplate;
     }
 
     public List<User> index() {
         return jdbcTemplate.query("SELECT * FROM users", new UserMapper());
     }
 
+    //Перестало выводится сообщение об ошибке из-за блока try catch
+    @Transactional
     @Override
     public User addUser(User user, String twoPassword) throws PasswordMismatchException, WrongEmailException {
 
-        if (!(findEmailUser(user.getEmail())) && checkPassword(user.getPassword(), twoPassword)) {
+        transactionTemplate.execute(status ->{
 
-            String password = passwordEncoder.encode(user.getPassword());
+            try {
+                if (!(findEmailUser(user.getEmail())) && checkPassword(user.getPassword(), twoPassword)) {
 
-            int id = jdbcTemplate.queryForObject("INSERT INTO users (user_name,user_email,user_password,enabled) VALUES(?,?,?,?) RETURNING user_id",
-                    Integer.class,
-                    user.getName(), user.getEmail(), password,user.isEnabled());
+                    String password = passwordEncoder.encode(user.getPassword());
 
-            jdbcTemplate.update("INSERT INTO authorities (authority,user_id) VALUES(?,?)", "USER", id);
+                    int id = jdbcTemplate.queryForObject("INSERT INTO users (user_name,user_email,user_password,enabled) VALUES(?,?,?,?) RETURNING user_id",
+                            Integer.class,
+                            user.getName(), user.getEmail(), password,user.isEnabled());
 
-            user.setId(id);
+                    jdbcTemplate.update("INSERT INTO authorities (authority,user_id) VALUES(?,?)", "USER", id);
 
-            return user;
-        }
+                    user.setId(id);
+
+                    return user;
+                }
+            } catch (WrongEmailException | PasswordMismatchException e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
         return null;
     }
 

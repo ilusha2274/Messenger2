@@ -2,9 +2,13 @@ package spring;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import repository.*;
@@ -42,17 +46,17 @@ public class SpringConfig implements WebMvcConfigurer {
 
     @Bean
     public UserRepository userRepository(JdbcTemplate jdbcTemplate,PasswordEncoder passwordEncoder) {
-        return new DatabaseUserRepository(jdbcTemplate,passwordEncoder);
+        return new DatabaseUserRepository(jdbcTemplate,passwordEncoder,transactionTemplate());
     }
 
     @Bean
     public ChatRepository chatRepository(JdbcTemplate jdbcTemplate) {
-        return new DatabaseChatRepository(jdbcTemplate);
+        return new DatabaseChatRepository(jdbcTemplate,transactionTemplate());
     }
 
     @Bean
     public UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate,PasswordEncoder passwordEncoder){
-        return new DatabaseUserRepository(jdbcTemplate,passwordEncoder);
+        return new DatabaseUserRepository(jdbcTemplate,passwordEncoder,transactionTemplate());
     }
 
     @Bean
@@ -99,5 +103,15 @@ public class SpringConfig implements WebMvcConfigurer {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public TransactionTemplate transactionTemplate (){
+        return new TransactionTemplate(transactionManager());
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(){
+        return new JdbcTransactionManager(dataSource());
     }
 }
