@@ -33,7 +33,6 @@ public class DatabaseUserRepository implements UserRepository, UserDetailsServic
     }
 
     //Перестало выводится сообщение об ошибке из-за блока try catch
-    @Transactional
     @Override
     public User addUser(User user, String twoPassword) throws PasswordMismatchException, WrongEmailException {
 
@@ -89,7 +88,7 @@ public class DatabaseUserRepository implements UserRepository, UserDetailsServic
     @Override
     public User logInUser(String email, String password) throws WrongLoginPasswordException {
         User user = findUserByEmail(email);
-        if (user != null && password.equals(user.getPassword())) {
+        if (user != null && passwordEncoder.matches(password,user.getPassword())) {
             return user;
         } else {
             throw new WrongLoginPasswordException("Неверное имя пользователя или пароль");

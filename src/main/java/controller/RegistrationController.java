@@ -1,5 +1,9 @@
 package controller;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import repository.User;
 import exception.PasswordMismatchException;
 import exception.WrongEmailException;
@@ -16,9 +20,11 @@ import java.sql.SQLException;
 public class RegistrationController {
 
     private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
 
-    public RegistrationController(UserRepository userRepository) {
+    public RegistrationController(UserRepository userRepository, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
+        this.authenticationManager = authenticationManager;
     }
 
     @GetMapping("/registration")
@@ -26,7 +32,6 @@ public class RegistrationController {
         return "registration";
     }
 
-    // Не добавляет в сессию а перекидывает налогин.
     @PostMapping("/registration")
     public String registration(HttpSession session, String email, String name, String password,
                                String twoPassword, Model model) {
@@ -35,7 +40,8 @@ public class RegistrationController {
 
         try {
             User user = userRepository.addUser(newUser, twoPassword);
-            session.setAttribute("user", user);
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email,password));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             return "redirect:home";
 
         } catch (WrongEmailException | PasswordMismatchException | SQLException e) {
