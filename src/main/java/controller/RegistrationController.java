@@ -40,7 +40,7 @@ public class RegistrationController {
 
         try {
             User user = userRepository.addUser(newUser, twoPassword);
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email,password));
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return "redirect:home";
 

@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 
@@ -22,7 +21,7 @@ public class DatabaseUserRepository implements UserRepository, UserDetailsServic
     private final TransactionTemplate transactionTemplate;
 
     @Autowired
-    public DatabaseUserRepository(JdbcTemplate jdbcTemplate,PasswordEncoder passwordEncoder,TransactionTemplate transactionTemplate) {
+    public DatabaseUserRepository(JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder, TransactionTemplate transactionTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.passwordEncoder = passwordEncoder;
         this.transactionTemplate = transactionTemplate;
@@ -36,7 +35,7 @@ public class DatabaseUserRepository implements UserRepository, UserDetailsServic
     @Override
     public User addUser(User user, String twoPassword) throws PasswordMismatchException, WrongEmailException {
 
-        transactionTemplate.execute(status ->{
+        transactionTemplate.execute(status -> {
 
             try {
                 if (!(findEmailUser(user.getEmail())) && checkPassword(user.getPassword(), twoPassword)) {
@@ -45,7 +44,7 @@ public class DatabaseUserRepository implements UserRepository, UserDetailsServic
 
                     int id = jdbcTemplate.queryForObject("INSERT INTO users (user_name,user_email,user_password,enabled) VALUES(?,?,?,?) RETURNING user_id",
                             Integer.class,
-                            user.getName(), user.getEmail(), password,user.isEnabled());
+                            user.getName(), user.getEmail(), password, user.isEnabled());
 
                     jdbcTemplate.update("INSERT INTO authorities (authority,user_id) VALUES(?,?)", "USER", id);
 
@@ -88,7 +87,7 @@ public class DatabaseUserRepository implements UserRepository, UserDetailsServic
     @Override
     public User logInUser(String email, String password) throws WrongLoginPasswordException {
         User user = findUserByEmail(email);
-        if (user != null && passwordEncoder.matches(password,user.getPassword())) {
+        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             return user;
         } else {
             throw new WrongLoginPasswordException("Неверное имя пользователя или пароль");
@@ -103,7 +102,7 @@ public class DatabaseUserRepository implements UserRepository, UserDetailsServic
     }
 
     @Override
-    public User findUserById (int id){
+    public User findUserById(int id) {
         return jdbcTemplate.query("SELECT * FROM users WHERE user_id=?", new Object[]{id},
                 new UserMapper()).stream().findAny().orElse(null);
     }

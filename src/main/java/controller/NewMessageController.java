@@ -33,8 +33,20 @@ public class NewMessageController {
     }
 
     @PostMapping("/newmessage")
-    public String newMessage(String email, @AuthenticationPrincipal User user, Model model) {
+    public String newMessage(String email, String nameChat, @AuthenticationPrincipal User user, Model model) {
 
+        String result = "redirect:chat";
+        if (nameChat != null) {
+            addGroupChat(nameChat, user, model);
+        }
+
+        if (email != null) {
+            result = addPrivateChat(email, user, model);
+        }
+        return result;
+    }
+
+    private String addPrivateChat(String email, User user, Model model) {
         User user2 = userRepository.findUserByEmail(email);
         List<User> users = new ArrayList<>();
         users.add(user);
@@ -53,4 +65,10 @@ public class NewMessageController {
         }
     }
 
+    private String addGroupChat(String nameChat, User user, Model model) {
+        chatRepository.addGroupChat(nameChat, "group", user);
+        model.addAttribute("activePage", "CHAT");
+        model.addAttribute("title", user.getName());
+        return "redirect:chat";
+    }
 }

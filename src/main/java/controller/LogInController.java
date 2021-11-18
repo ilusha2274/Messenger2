@@ -12,8 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.servlet.http.HttpSession;
-
 @Controller
 public class LogInController {
 
@@ -31,17 +29,17 @@ public class LogInController {
     }
 
     @GetMapping("loginerror")
-    public String printLoginError(Model model){
+    public String printLoginError(Model model) {
         model.addAttribute("exception", "Неверное имя пользователя или пароль");
         return "login";
     }
 
     @PostMapping("/loginerror")
-    public String login(HttpSession session, Model model, String email, String password) {
+    public String login(Model model, String email, String password) {
 
         try {
             User userLogIn = userRepository.logInUser(email, password);
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email,password));
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return "redirect:home";
         } catch (WrongLoginPasswordException e) {

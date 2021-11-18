@@ -1,6 +1,7 @@
 package repository;
 
 import helper.ChatMapper;
+import helper.PrintChatMapper;
 import helper.MessageMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,14 +18,14 @@ public class DatabaseChatRepository implements ChatRepository {
     private final TransactionTemplate transactionTemplate;
 
     @Autowired
-    public DatabaseChatRepository(JdbcTemplate jdbcTemplate,TransactionTemplate transactionTemplate) {
+    public DatabaseChatRepository(JdbcTemplate jdbcTemplate, TransactionTemplate transactionTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.transactionTemplate = transactionTemplate;
     }
 
     @Override
     public List<Chat> findListChatByUser(User user) {
-        return jdbcTemplate.query("SELECT chats.chat_id, messages.text_message, messages.date_message, users.user_name AS username " +
+        return jdbcTemplate.query("SELECT chats.chat_id, messages.text_message, messages.date_message, users.user_name AS chatname " +
                         " FROM chats " +
                         " LEFT JOIN messages " +
                         " ON chats.chat_last_message = messages.message_id " +
@@ -38,7 +39,7 @@ public class DatabaseChatRepository implements ChatRepository {
                         " WHERE chats.chat_type = 'private' " +
                         " AND uc1.user_id = ? " +
                         " UNION " +
-                        " SELECT chats.chat_id, messages.text_message, messages.date_message, chats.name_chat AS username " +
+                        " SELECT chats.chat_id, messages.text_message, messages.date_message, chats.name_chat AS chatname " +
                         " FROM chats " +
                         " LEFT JOIN messages " +
                         " ON chats.chat_last_message = messages.message_id " +
@@ -47,7 +48,7 @@ public class DatabaseChatRepository implements ChatRepository {
                         " WHERE users_chats.user_id = ?" +
                         " AND chats.chat_type = 'group' " +
                         " UNION " +
-                        " SELECT chats.chat_id, messages.text_message, messages.date_message, chats.chat_type AS username " +
+                        " SELECT chats.chat_id, messages.text_message, messages.date_message, chats.chat_type AS chatname " +
                         " FROM chats " +
                         " LEFT JOIN messages " +
                         " ON chats.chat_last_message = messages.message_id " +
@@ -55,7 +56,7 @@ public class DatabaseChatRepository implements ChatRepository {
                         " ON chats.chat_id = users_chats.chat_id " +
                         " WHERE users_chats.user_id = ?" +
                         " AND chats.chat_type = 'saved' ",
-                new ChatMapper(),user.getId(),user.getId(),user.getId(),user.getId());
+                new PrintChatMapper(), user.getId(), user.getId(), user.getId(), user.getId());
     }
 
     // Не используется. Надо поменять
@@ -63,15 +64,15 @@ public class DatabaseChatRepository implements ChatRepository {
     public Chat getByNumberChat(int i) {
         return jdbcTemplate.query("SELECT * FROM chats WHERE chat_id=?",
                 new Object[]{i},
-                new ChatMapper()).stream().findAny().orElse(null);
+                new PrintChatMapper()).stream().findAny().orElse(null);
     }
 
     @Override
-    public Chat addChat(List<User> users,String chatType) {
+    public Chat addChat(List<User> users, String chatType) {
 
-        transactionTemplate.execute(status ->{
+        transactionTemplate.execute(status -> {
             int id = jdbcTemplate.queryForObject("INSERT INTO chats (chat_type) VALUES(?) RETURNING chat_id",
-                    Integer.class,chatType);
+                    Integer.class, chatType);
             for (User user : users) {
                 jdbcTemplate.update("INSERT INTO users_chats (user_id,chat_id) VALUES(?,?)", user.getId(), id);
             }
@@ -100,6 +101,35 @@ public class DatabaseChatRepository implements ChatRepository {
     @Override
     public List<Message> getListMessageByNumberChat(int i) {
         return jdbcTemplate.query(" SELECT * FROM messages WHERE chat_id=? ",
-                new MessageMapper(),i);
+                new MessageMapper(), i);
+    }
+
+    @Override
+    public Chat addGroupChat(String nameChat, String chatType, User user) {
+
+        transactionTemplate.execute(status -> {
+            int id = jdbcTemplate.queryForObject("INSERT INTO chats (chat_type,name_chat) VALUES(?,?) RETURNING chat_id",
+                    Integer.class, chatType, nameChat);
+
+            jdbcTemplate.update("INSERT INTO users_chats (user_id,chat_id) VALUES(?,?)", user.getId(), id);
+            return null;
+        });
+        return null;
+    }
+
+    @Override
+    public Chat findChatByName(String nameChat, User user) {
+        return (Chat) jdbcTemplate.query("SELECT chats.chat_id, chats.name_chat AS chatname " +
+                        " FROM chats " +
+                        " JOIN users_chats " +
+                        " ON chats.chat_id = users_chats.chat_id " +
+                        " WHERE chats.name_chat = ? " +
+                        " AND users_chats.user_id = ? ",
+                new ChatMapper(), nameChat, user.getId()).stream().findAny().orElse(null);
+    }
+
+    @Override
+    public void addUserToGroupChat(User user, Chat chat) {
+        jdbcTemplate.update("INSERT INTO users_chats (user_id,chat_id) VALUES(?,?)", user.getId(), chat.getChatId());
     }
 }

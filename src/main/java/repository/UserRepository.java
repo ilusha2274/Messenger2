@@ -3,7 +3,6 @@ package repository;
 import exception.PasswordMismatchException;
 import exception.WrongEmailException;
 import exception.WrongLoginPasswordException;
-import org.springframework.ui.Model;
 
 import java.sql.SQLException;
 
