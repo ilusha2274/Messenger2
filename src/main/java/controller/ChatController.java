@@ -1,7 +1,11 @@
 package controller;
 
 import helper.PrintMessage;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.util.HtmlUtils;
 import repository.Chat;
 import repository.Message;
 import repository.User;
@@ -9,6 +13,7 @@ import repository.ChatRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import websocket.ChatMessage;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -56,12 +61,19 @@ public class ChatController {
         return "chat";
     }
 
-    @PostMapping("/chat/{id}")
-    public String chat(String message, @AuthenticationPrincipal User user, @PathVariable Integer id) throws IOException {
+//    @PostMapping("/chat/{id}")
+//    public String chat(String message, @AuthenticationPrincipal User user, @PathVariable Integer id) throws IOException {
+//
+//        chatRepository.addMessageToChat(message, user, id);
+//
+//        return "redirect:" + id;
+//    }
 
+    @MessageMapping("/chat/{id}")
+    @SendTo("/topic/messages")
+    public ChatMessage sendMessage(String message,@AuthenticationPrincipal User user,@PathVariable Integer id) {
         chatRepository.addMessageToChat(message, user, id);
-
-        return "redirect:" + id;
+        return new ChatMessage(HtmlUtils.htmlEscape(message));
     }
 
     private ArrayList<PrintMessage> printMessages(List<Message> messages, User user) {
