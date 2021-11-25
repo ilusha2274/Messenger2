@@ -3,6 +3,7 @@ package spring;
 import filter.CharsetFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import security.SecurityConfig;
+import websocket.WebSocketConfig;
 
 import javax.servlet.Filter;
 
@@ -20,7 +21,7 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{SpringConfig.class, SecurityConfig.class};
+        return new Class[]{SpringConfig.class, SecurityConfig.class, WebSocketConfig.class};
     }
 
     @Override

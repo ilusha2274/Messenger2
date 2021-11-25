@@ -2,8 +2,8 @@ package controller;
 
 import helper.PrintMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.util.HtmlUtils;
 import repository.Chat;
@@ -25,11 +25,13 @@ import java.util.Locale;
 public class ChatController {
 
     private final ChatRepository chatRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
     private final DateTimeFormatter dateTimeFormatterTime = DateTimeFormatter.ofPattern("HH:mm");
     private final DateTimeFormatter dateTimeFormatterDate = DateTimeFormatter.ofPattern("dd MMM", Locale.ENGLISH);
 
-    public ChatController(ChatRepository chatRepository) {
+    public ChatController(ChatRepository chatRepository, SimpMessagingTemplate simpMessagingTemplate) {
         this.chatRepository = chatRepository;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
 
@@ -61,13 +63,14 @@ public class ChatController {
         return "chat";
     }
 
-//    @PostMapping("/chat/{id}")
-//    public String chat(String message, @AuthenticationPrincipal User user, @PathVariable Integer id) throws IOException {
-//
-//        chatRepository.addMessageToChat(message, user, id);
-//
-//        return "redirect:" + id;
-//    }
+    @PostMapping("/chat/{id}")
+    public String chat(String message, @AuthenticationPrincipal User user, @PathVariable Integer id) throws IOException {
+
+        chatRepository.addMessageToChat(message, user, id);
+        simpMessagingTemplate.convertAndSend("/topic/messages",new ChatMessage(HtmlUtils.htmlEscape(message)));
+
+        return "redirect:" + id;
+    }
 
     @MessageMapping("/chat/{id}")
     @SendTo("/topic/messages")

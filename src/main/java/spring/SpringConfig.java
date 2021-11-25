@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
@@ -45,6 +44,9 @@ public class SpringConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/css/**")
                 .addResourceLocations("/resources/css/");
+
+        registry.addResourceHandler("/js/**")
+                .addResourceLocations("/resources/js/");
     }
 
     @Bean
@@ -127,4 +129,6 @@ public class SpringConfig implements WebMvcConfigurer {
             }
         };
     }
+
+
 }
