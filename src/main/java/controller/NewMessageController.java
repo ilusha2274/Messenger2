@@ -50,6 +50,14 @@ public class NewMessageController {
         User user2 = userRepository.findUserByEmail(email);
         List<User> users = new ArrayList<>();
         users.add(user);
+
+        if (user.getId() == user2.getId()){
+            model.addAttribute("activePage", "CHAT");
+            model.addAttribute("title", user.getName());
+            chatRepository.addChat(users, "saved");
+            return "redirect:chat";
+        }
+
         users.add(user2);
 
         if (user2 != null) {

@@ -39,14 +39,16 @@ public class RegistrationController {
         User newUser = new User(name, email, password);
 
         try {
-            User user = userRepository.addUser(newUser, twoPassword);
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            return "redirect:home";
+            if (!(userRepository.findEmailUser(email)) && userRepository.checkPassword(password, twoPassword)) {
+                User user = userRepository.addUser(newUser, twoPassword);
+                Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
 
         } catch (WrongEmailException | PasswordMismatchException | SQLException e) {
             model.addAttribute("exception", e.getMessage());
             return "registration";
         }
+        return "redirect:home";
     }
 }

@@ -37,27 +37,19 @@ public class DatabaseUserRepository implements UserRepository, UserDetailsServic
 
         transactionTemplate.execute(status -> {
 
-            try {
-                if (!(findEmailUser(user.getEmail())) && checkPassword(user.getPassword(), twoPassword)) {
+            String password = passwordEncoder.encode(user.getPassword());
 
-                    String password = passwordEncoder.encode(user.getPassword());
+            int id = jdbcTemplate.queryForObject("INSERT INTO users (user_name,user_email,user_password,enabled) VALUES(?,?,?,?) RETURNING user_id",
+                    Integer.class,
+                    user.getName(), user.getEmail(), password, user.isEnabled());
 
-                    int id = jdbcTemplate.queryForObject("INSERT INTO users (user_name,user_email,user_password,enabled) VALUES(?,?,?,?) RETURNING user_id",
-                            Integer.class,
-                            user.getName(), user.getEmail(), password, user.isEnabled());
+            jdbcTemplate.update("INSERT INTO authorities (authority,user_id) VALUES(?,?)", "USER", id);
 
-                    jdbcTemplate.update("INSERT INTO authorities (authority,user_id) VALUES(?,?)", "USER", id);
+            user.setId(id);
 
-                    user.setId(id);
-
-                    return user;
-                }
-            } catch (WrongEmailException | PasswordMismatchException e) {
-                e.printStackTrace();
-            }
-            return null;
+            return user;
         });
-        return null;
+        return user;
     }
 
     @Override
