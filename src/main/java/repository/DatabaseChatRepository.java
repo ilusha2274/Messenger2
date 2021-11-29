@@ -82,12 +82,14 @@ public class DatabaseChatRepository implements ChatRepository {
     }
 
     @Override
-    public void addMessageToChat(String text, User user, int chatId) {
+    public Message addMessageToChat(String text, User user, int chatId) {
+
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Message message = new Message(user,text,localDateTime);
 
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                LocalDateTime localDateTime = LocalDateTime.now();
 
                 int id = jdbcTemplate.queryForObject("INSERT INTO messages (text_message,chat_id,user_id,date_message) VALUES(?,?,?,?) RETURNING message_id",
                         Integer.class,
@@ -96,6 +98,7 @@ public class DatabaseChatRepository implements ChatRepository {
                 jdbcTemplate.update("UPDATE chats SET chat_last_message=? WHERE chat_id=?", id, chatId);
             }
         });
+        return message;
     }
 
     @Override
@@ -131,5 +134,13 @@ public class DatabaseChatRepository implements ChatRepository {
     @Override
     public void addUserToGroupChat(User user, Chat chat) {
         jdbcTemplate.update("INSERT INTO users_chats (user_id,chat_id) VALUES(?,?)", user.getId(), chat.getChatId());
+    }
+
+    @Override
+    public boolean findUserInChat (Integer chatID, User user){
+
+        return jdbcTemplate.query("SELECT users_chats.chat_id, user_id AS chatname FROM users_chats WHERE chat_id=? AND user_id= ?",
+                new ChatMapper(), chatID, user.getId()).stream().findAny().orElse(null) != null;
+
     }
 }

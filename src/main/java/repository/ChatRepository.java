@@ -9,7 +9,7 @@ public interface ChatRepository {
 
     Chat addChat(List<User> users, String chatType);
 
-    void addMessageToChat(String text, User user, int chatId);
+    Message addMessageToChat(String text, User user, int chatId);
 
     List<Message> getListMessageByNumberChat(int i);
 
@@ -18,4 +18,6 @@ public interface ChatRepository {
     Chat findChatByName(String nameChat, User user);
 
     void addUserToGroupChat(User user, Chat chat);
+
+    boolean findUserInChat (Integer chatID, User user);
 }

@@ -52,32 +52,46 @@ public class ChatController {
     public String printChat(Model model, @AuthenticationPrincipal User user, @PathVariable Integer id) {
 
         ArrayList<Chat> chats = (ArrayList<Chat>) chatRepository.findListChatByUser(user);
-        ArrayList<PrintMessage> printMessages = printMessages(chatRepository.getListMessageByNumberChat(id), user);
 
-        model.addAttribute("activePage", "CHAT");
-        model.addAttribute("title", user.getName());
-        model.addAttribute("printMessages", printMessages);
-        model.addAttribute("printChats", chats);
-        model.addAttribute("active", true);
+        if (chatRepository.findUserInChat(id,user)){
 
+            ArrayList<PrintMessage> printMessages = printMessages(chatRepository.getListMessageByNumberChat(id), user);
+
+            model.addAttribute("activePage", "CHAT");
+            model.addAttribute("title", user.getName());
+            model.addAttribute("printMessages", printMessages);
+            model.addAttribute("printChats", chats);
+            model.addAttribute("active", true);
+
+        }else {
+            model.addAttribute("printChats", chats);
+            model.addAttribute("activePage", "CHAT");
+            model.addAttribute("title", user.getName());
+            model.addAttribute("active", false);
+
+        }
         return "chat";
     }
 
     @PostMapping("/chat/{id}")
     public String chat(String message, @AuthenticationPrincipal User user, @PathVariable Integer id) throws IOException {
 
-        chatRepository.addMessageToChat(message, user, id);
-        simpMessagingTemplate.convertAndSend("/topic/messages",new ChatMessage(HtmlUtils.htmlEscape(message)));
+        Message newMessage = chatRepository.addMessageToChat(message, user, id);
+        ChatMessage chatMessage = new ChatMessage(HtmlUtils.htmlEscape(message));
+        String date = newMessage.getLocalDateTime().format(dateTimeFormatterTime) + " | " +
+                newMessage.getLocalDateTime().format(dateTimeFormatterDate);
+        chatMessage.setTime(HtmlUtils.htmlEscape(date));
+        simpMessagingTemplate.convertAndSend("/topic/messages", new ChatMessage(HtmlUtils.htmlEscape(message)));
 
         return "redirect:" + id;
     }
 
-    @MessageMapping("/chat/{id}")
-    @SendTo("/topic/messages")
-    public ChatMessage sendMessage(String message,@AuthenticationPrincipal User user,@PathVariable Integer id) {
-        chatRepository.addMessageToChat(message, user, id);
-        return new ChatMessage(HtmlUtils.htmlEscape(message));
-    }
+//    @MessageMapping("/chat/{id}")
+//    @SendTo("/topic/messages")
+//    public ChatMessage sendMessage(String message,@AuthenticationPrincipal User user,@PathVariable Integer id) {
+//        chatRepository.addMessageToChat(message, user, id);
+//        return new ChatMessage(HtmlUtils.htmlEscape(message));
+//    }
 
     private ArrayList<PrintMessage> printMessages(List<Message> messages, User user) {
 

@@ -15,15 +15,22 @@ function connect() {
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/messages', function (message) {
-            showMessage(JSON.parse(message.body).content);
+            showMessage(JSON.parse(message.body).content, JSON.parse(message.body).content);
         });
 
     });
 }
 
-function showMessage(message) {
+function showMessage(message, date) {
     console.log('Got message: ' + message);
-    $("#messages").append("<tr><td>" + message + "</td></tr>");
+    $("#messages").append(" <div class= \"media w-50 mb-3\"> " +
+    " <div class= \"media-body ml-3\"> " +
+    " <div class= \"bg-light rounded py-2 px-3 mb-2\"> " +
+    " <p class= \"text-small mb-0 text-muted\"> " + message + " </p> " +
+    " </div> " +
+    " <p class= \"small text-muted\"> " + date + " </p> " +
+    " </div> " +
+    " </div> ");
 }
 
 function sendMessage() {
