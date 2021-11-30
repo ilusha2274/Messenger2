@@ -70,22 +70,25 @@ public class DatabaseChatRepository implements ChatRepository {
     @Override
     public Chat addChat(List<User> users, String chatType) {
 
+        Chat chat = new Chat();
+
         transactionTemplate.execute(status -> {
             int id = jdbcTemplate.queryForObject("INSERT INTO chats (chat_type) VALUES(?) RETURNING chat_id",
                     Integer.class, chatType);
+            chat.setChatId(id);
             for (User user : users) {
                 jdbcTemplate.update("INSERT INTO users_chats (user_id,chat_id) VALUES(?,?)", user.getId(), id);
             }
-            return null;
+            return id;
         });
-        return null;
+        return chat;
     }
 
     @Override
     public Message addMessageToChat(String text, User user, int chatId) {
 
         LocalDateTime localDateTime = LocalDateTime.now();
-        Message message = new Message(user,text,localDateTime);
+        Message message = new Message(user, text, localDateTime);
 
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -137,10 +140,17 @@ public class DatabaseChatRepository implements ChatRepository {
     }
 
     @Override
-    public boolean findUserInChat (Integer chatID, User user){
+    public boolean findUserInChat(Integer chatID, User user) {
 
         return jdbcTemplate.query("SELECT users_chats.chat_id, user_id AS chatname FROM users_chats WHERE chat_id=? AND user_id= ?",
                 new ChatMapper(), chatID, user.getId()).stream().findAny().orElse(null) != null;
 
+    }
+
+    @Override
+    public Chat searchChatBetweenUsers(User user1, User user2) {
+        return jdbcTemplate.query("SELECT users_users.user1_id AS chatname, users_users.chat_id  FROM users_users " +
+                        "WHERE users_users.user1_id = ? AND users_users.user2_id= ?",
+                new ChatMapper(), user1.getId(), user2.getId()).stream().findAny().orElse(null);
     }
 }

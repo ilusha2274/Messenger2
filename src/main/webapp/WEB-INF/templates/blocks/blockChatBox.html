@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta charset="UTF-8">
@@ -10,6 +10,7 @@
 </head>
 
 <div th:fragment="blockChatBox">
+
     <div class="overflow-auto p-3 mb-3 mb-md-2 mr-md-3 bg-light " style="height : 87vh;">
 
         <div id="messages" class="px-2 py-3 chat-box bg-white 100vh">
@@ -24,6 +25,7 @@
     </div>
     <!-- Typing area -->
     <form method="post" class="bg-light">
+        <input id = "chatID" type="hidden" th:attr="value=${chatID}">
         <div class="input-group">
             <input type="text" name="message" placeholder="Type a message" aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light">
             <div class="input-group-append">

@@ -3,6 +3,8 @@ package repository;
 import exception.PasswordMismatchException;
 import exception.WrongEmailException;
 import exception.WrongLoginPasswordException;
+import helper.PrintFriend;
+import helper.PrintFriendMapper;
 import helper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -102,5 +104,22 @@ public class DatabaseUserRepository implements UserRepository, UserDetailsServic
     @Override
     public User loadUserByUsername(String s) throws UsernameNotFoundException {
         return findUserByEmail(s);
+    }
+
+    @Override
+    public void addNewFriends(User user1, User user2, int chatId) {
+
+        jdbcTemplate.update("INSERT INTO users_users (user1_id, user2_id, chat_id) VALUES(?,?,?)",
+                user1.getId(), user2.getId(), chatId);
+    }
+
+    @Override
+    public List<PrintFriend> findListFriendsByUser(User user) {
+        return jdbcTemplate.query(" SELECT users_users.chat_id, users.user_name " +
+                        " FROM users_users  " +
+                        " JOIN users  " +
+                        " ON users_users.user2_id = users.user_id " +
+                        " WHERE users_users.user1_id = ? ",
+                new PrintFriendMapper(), user.getId());
     }
 }

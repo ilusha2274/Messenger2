@@ -12,6 +12,9 @@ public class Chat {
     private String dateLastMessage;
     private String textLastMessage;
 
+    public Chat() {
+    }
+
     public Chat(String nameChat, int chatId, String dateLastMessage, String textLastMessage) {
         this.nameChat = nameChat;
         this.chatId = chatId;

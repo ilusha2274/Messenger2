@@ -20,7 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception{
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
         auth.userDetailsService(userDetailsService);
     }
@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/home","/profile","/chat","/newmessage","/settings","/addUserGroupChat").authenticated()
+                .antMatchers("/home", "/profile", "/chat", "/newmessage", "/settings", "/addUserGroupChat").authenticated()
                 .antMatchers(HttpMethod.GET, "/registration", "/js").permitAll()
                 .and()
                 .formLogin().loginPage("/login").usernameParameter("email").permitAll()

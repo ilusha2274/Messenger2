@@ -51,22 +51,24 @@ public class ChatController {
     @GetMapping("/chat/{id}")
     public String printChat(Model model, @AuthenticationPrincipal User user, @PathVariable Integer id) {
 
+        model.addAttribute("title", user.getName());
+
         ArrayList<Chat> chats = (ArrayList<Chat>) chatRepository.findListChatByUser(user);
 
-        if (chatRepository.findUserInChat(id,user)){
+        if (chatRepository.findUserInChat(id, user)) {
 
             ArrayList<PrintMessage> printMessages = printMessages(chatRepository.getListMessageByNumberChat(id), user);
 
             model.addAttribute("activePage", "CHAT");
-            model.addAttribute("title", user.getName());
             model.addAttribute("printMessages", printMessages);
             model.addAttribute("printChats", chats);
             model.addAttribute("active", true);
+            model.addAttribute("chatID", id);
 
-        }else {
+
+        } else {
             model.addAttribute("printChats", chats);
             model.addAttribute("activePage", "CHAT");
-            model.addAttribute("title", user.getName());
             model.addAttribute("active", false);
 
         }
@@ -77,11 +79,14 @@ public class ChatController {
     public String chat(String message, @AuthenticationPrincipal User user, @PathVariable Integer id) throws IOException {
 
         Message newMessage = chatRepository.addMessageToChat(message, user, id);
-        ChatMessage chatMessage = new ChatMessage(HtmlUtils.htmlEscape(message));
         String date = newMessage.getLocalDateTime().format(dateTimeFormatterTime) + " | " +
                 newMessage.getLocalDateTime().format(dateTimeFormatterDate);
+
+        ChatMessage chatMessage = new ChatMessage();
         chatMessage.setTime(HtmlUtils.htmlEscape(date));
-        simpMessagingTemplate.convertAndSend("/topic/messages", new ChatMessage(HtmlUtils.htmlEscape(message)));
+        chatMessage.setContent(HtmlUtils.htmlEscape(message));
+        simpMessagingTemplate.convertAndSend("/topic/messages/" + id, chatMessage);
+        //simpMessagingTemplate.convertAndSendToUser();
 
         return "redirect:" + id;
     }

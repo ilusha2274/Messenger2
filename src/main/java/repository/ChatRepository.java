@@ -19,5 +19,7 @@ public interface ChatRepository {
 
     void addUserToGroupChat(User user, Chat chat);
 
-    boolean findUserInChat (Integer chatID, User user);
+    boolean findUserInChat(Integer chatID, User user);
+
+    Chat searchChatBetweenUsers(User user1, User user2);
 }

@@ -53,6 +53,7 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
+
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
@@ -74,7 +75,7 @@ public class User implements UserDetails {
         role = "USER";
     }
 
-    public User (String name, String email, String password){
+    public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;

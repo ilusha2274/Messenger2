@@ -50,18 +50,18 @@ public class SpringConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public UserRepository userRepository(JdbcTemplate jdbcTemplate,PasswordEncoder passwordEncoder) {
-        return new DatabaseUserRepository(jdbcTemplate,passwordEncoder,transactionTemplate());
+    public UserRepository userRepository(JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder) {
+        return new DatabaseUserRepository(jdbcTemplate, passwordEncoder, transactionTemplate());
     }
 
     @Bean
     public ChatRepository chatRepository(JdbcTemplate jdbcTemplate) {
-        return new DatabaseChatRepository(jdbcTemplate,transactionTemplate());
+        return new DatabaseChatRepository(jdbcTemplate, transactionTemplate());
     }
 
     @Bean
-    public UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate,PasswordEncoder passwordEncoder){
-        return new DatabaseUserRepository(jdbcTemplate,passwordEncoder,transactionTemplate());
+    public UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder) {
+        return new DatabaseUserRepository(jdbcTemplate, passwordEncoder, transactionTemplate());
     }
 
     @Bean
@@ -106,22 +106,22 @@ public class SpringConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public TransactionTemplate transactionTemplate (){
+    public TransactionTemplate transactionTemplate() {
         return new TransactionTemplate(transactionManager());
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager(){
+    public PlatformTransactionManager transactionManager() {
         return new JdbcTransactionManager(dataSource());
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(){
+    public AuthenticationManager authenticationManager() {
         return new AuthenticationManager() {
             @Override
             public Authentication authenticate(Authentication authentication) throws AuthenticationException {

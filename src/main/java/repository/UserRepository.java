@@ -3,8 +3,10 @@ package repository;
 import exception.PasswordMismatchException;
 import exception.WrongEmailException;
 import exception.WrongLoginPasswordException;
+import helper.PrintFriend;
 
 import java.sql.SQLException;
+import java.util.List;
 
 
 public interface UserRepository {
@@ -21,4 +23,8 @@ public interface UserRepository {
     User findUserByEmail(String email);
 
     User findUserById(int id);
+
+    void addNewFriends(User user1, User user2, int chatId);
+
+    List<PrintFriend> findListFriendsByUser(User user);
 }

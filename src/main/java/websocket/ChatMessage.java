@@ -4,7 +4,7 @@ public class ChatMessage {
     private String content;
     private String time;
 
-    public ChatMessage(){
+    public ChatMessage() {
     }
 
     public ChatMessage(String content, String time) {
@@ -12,7 +12,7 @@ public class ChatMessage {
         this.time = time;
     }
 
-    public ChatMessage (String content){
+    public ChatMessage(String content) {
         this.content = content;
     }
 
