@@ -17,21 +17,11 @@
             <blockMenu th:insert="blocks/blockMenu :: blockMenu"></blockMenu>
         </div>
         <div class="col-lg-10 gy-3" style="background-color: #1e1d2f">
-            <form method="post">
-                <div class="form-floating mb-3">
-                    <input type="text" name="email" class="form-control rounded-4" id="email" placeholder="name@example.com">
-                    <label for="email">Email address</label>
-                </div>
-                <div>
-                    <p style="color:#ff0000" th:text="${exception}"></p>
-                </div>
-                <button class="w-100 mb-2 btn btn-lg rounded-4 btn-primary" type="submit">Create new message</button>
-            </form>
 
             <form method="post">
                 <div class="form-floating mb-3">
                     <input type="text" name="nameChat" class="form-control rounded-4" id="nameChat">
-                    <label for="email">Name Chat</label>
+                    <label for="nameChat">Name Chat</label>
                 </div>
                 <button class="w-100 mb-2 btn btn-lg rounded-4 btn-primary" type="submit">Create new group chat</button>
             </form>
