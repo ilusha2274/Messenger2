@@ -3,6 +3,7 @@ package repository;
 import helper.ChatMapper;
 import helper.PrintChatMapper;
 import helper.MessageMapper;
+import helper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.TransactionStatus;
@@ -152,5 +153,14 @@ public class DatabaseChatRepository implements ChatRepository {
         return jdbcTemplate.query("SELECT users_users.user1_id AS chatname, users_users.chat_id  FROM users_users " +
                         "WHERE users_users.user1_id = ? AND users_users.user2_id= ?",
                 new ChatMapper(), user1.getId(), user2.getId()).stream().findAny().orElse(null);
+    }
+
+    @Override
+    public List<User> findListUserInChat (int chatID){
+        return jdbcTemplate.query(" SELECT users.user_id, users.user_name, users.user_email, users.user_password, users.enabled " +
+                " FROM users_chats " +
+                " JOIN users " +
+                " ON users_chats.user_id = users.user_id " +
+                " WHERE users_chats.chat_id = ? ",new UserMapper(), chatID);
     }
 }

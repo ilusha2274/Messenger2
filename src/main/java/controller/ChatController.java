@@ -85,8 +85,11 @@ public class ChatController {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setTime(HtmlUtils.htmlEscape(date));
         chatMessage.setContent(HtmlUtils.htmlEscape(message));
-        simpMessagingTemplate.convertAndSend("/topic/messages/" + id, chatMessage);
-        //simpMessagingTemplate.convertAndSendToUser();
+        List<User> users = chatRepository.findListUserInChat(id);
+        for (User value : users) {
+            simpMessagingTemplate.convertAndSendToUser(value.getEmail(), "/queue/messages/" + id, chatMessage);
+        }
+        //simpMessagingTemplate.convertAndSend("/topic/messages/" + id, chatMessage);
 
         return "redirect:" + id;
     }

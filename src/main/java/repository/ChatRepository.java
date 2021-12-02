@@ -22,4 +22,6 @@ public interface ChatRepository {
     boolean findUserInChat(Integer chatID, User user);
 
     Chat searchChatBetweenUsers(User user1, User user2);
+
+    List<User> findListUserInChat (int chatID);
 }
