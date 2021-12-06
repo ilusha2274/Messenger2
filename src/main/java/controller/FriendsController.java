@@ -12,6 +12,7 @@ import repository.User;
 import repository.UserRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class FriendsController {
@@ -27,7 +28,7 @@ public class FriendsController {
     @GetMapping("/friends")
     public String printFriendsList(Model model, @AuthenticationPrincipal User user) {
 
-        ArrayList<PrintFriend> printFriends = (ArrayList<PrintFriend>) userRepository.findListFriendsByUser(user);
+        List<PrintFriend> printFriends = userRepository.findListFriendsByUser(user);
 
         model.addAttribute("title", user.getName());
         model.addAttribute("printFriends", printFriends);
@@ -58,10 +59,10 @@ public class FriendsController {
         users.add(user2);
 
         if (chat != null) {
-            userRepository.addNewFriends(user, user2, chat.getChatId());
+            userRepository.addNewFriends(user, user2);
         } else {
-            Chat chat2 = chatRepository.addChat(users, "private");
-            userRepository.addNewFriends(user, user2, chat2.getChatId());
+            chatRepository.addChat(users, "private");
+            userRepository.addNewFriends(user, user2);
         }
     }
 

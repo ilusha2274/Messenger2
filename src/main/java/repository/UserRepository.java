@@ -24,7 +24,7 @@ public interface UserRepository {
 
     User findUserById(int id);
 
-    void addNewFriends(User user1, User user2, int chatId);
+    void addNewFriends(User user1, User user2);
 
     List<PrintFriend> findListFriendsByUser(User user);
 }

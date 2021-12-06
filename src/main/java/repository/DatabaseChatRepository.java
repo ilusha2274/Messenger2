@@ -114,14 +114,16 @@ public class DatabaseChatRepository implements ChatRepository {
     @Override
     public Chat addGroupChat(String nameChat, String chatType, User user) {
 
+        Chat chat = new Chat();
+
         transactionTemplate.execute(status -> {
             int id = jdbcTemplate.queryForObject("INSERT INTO chats (chat_type,name_chat) VALUES(?,?) RETURNING chat_id",
                     Integer.class, chatType, nameChat);
-
+            chat.setChatId(id);
             jdbcTemplate.update("INSERT INTO users_chats (user_id,chat_id) VALUES(?,?)", user.getId(), id);
-            return null;
+            return id;
         });
-        return null;
+        return chat;
     }
 
     @Override

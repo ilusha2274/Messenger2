@@ -139,8 +139,7 @@ ALTER TABLE public.users ALTER COLUMN user_id ADD GENERATED ALWAYS AS IDENTITY (
 
 CREATE TABLE public.users_users (
     user1_id integer NOT NULL,
-    user2_id integer NOT NULL,
-    chat_id integer NOT NULL
+    user2_id integer NOT NULL
 );
 
 

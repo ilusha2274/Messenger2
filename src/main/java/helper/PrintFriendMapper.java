@@ -10,7 +10,7 @@ public class PrintFriendMapper implements RowMapper<PrintFriend> {
     @Override
     public PrintFriend mapRow(ResultSet resultSet, int i) throws SQLException {
 
-        return new PrintFriend(resultSet.getInt("chat_id"), resultSet.getString("user_name"));
+        return new PrintFriend(resultSet.getInt("chat_id"), resultSet.getString("user_name"), resultSet.getInt("user_id"));
     }
 
 }

@@ -107,19 +107,26 @@ public class DatabaseUserRepository implements UserRepository, UserDetailsServic
     }
 
     @Override
-    public void addNewFriends(User user1, User user2, int chatId) {
+    public void addNewFriends(User user1, User user2) {
 
-        jdbcTemplate.update("INSERT INTO users_users (user1_id, user2_id, chat_id) VALUES(?,?,?)",
-                user1.getId(), user2.getId(), chatId);
+        jdbcTemplate.update("INSERT INTO users_users (user1_id, user2_id) VALUES(?,?)",
+                user1.getId(), user2.getId());
     }
 
     @Override
     public List<PrintFriend> findListFriendsByUser(User user) {
-        return jdbcTemplate.query(" SELECT users_users.chat_id, users.user_name " +
-                        " FROM users_users  " +
-                        " JOIN users  " +
-                        " ON users_users.user2_id = users.user_id " +
-                        " WHERE users_users.user1_id = ? ",
+        return jdbcTemplate.query(" select u.user_name, uc.chat_id, u.user_id " +
+                        " from users u  " +
+                        " join users_users uu  " +
+                        " on u.user_id = uu.user2_id " +
+                        " join users_chats uc " +
+                        " on uu.user1_id=uc.user_id " +
+                        " join chats " +
+                        " on uc.chat_id =  chats.chat_id " +
+                        " and chats.chat_type= 'private' " +
+                        " join users_chats uc2 " +
+                        " on uu.user2_id = uc2.user_id and uc.chat_id=uc2.chat_id " +
+                        " where uu.user1_id = ? ",
                 new PrintFriendMapper(), user.getId());
     }
 }

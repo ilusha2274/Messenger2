@@ -38,6 +38,10 @@ public class User implements UserDetails {
         return email;
     }
 
+    public User(Integer id) {
+        this.id = id;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }

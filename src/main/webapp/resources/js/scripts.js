@@ -18,7 +18,7 @@ function connect() {
     var chatID = document.querySelector('#chatID').value;
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/queue/messages/' + chatID, function (message) {
+        stompClient.subscribe('/user/queue/messages/' + chatID, function (message) {
             showMessage(JSON.parse(message.body));
         });
 
