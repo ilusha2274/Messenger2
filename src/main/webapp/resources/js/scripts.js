@@ -29,6 +29,7 @@ function showMessage(message) {
     console.log('Got message: ' + message.content);
     $("#messages").append(" <div class= \"media w-50 mb-3\"> " +
     " <div class= \"media-body ml-3\"> " +
+    " <h6> " + message.nameAuthor + " </h6> "  +
     " <div class= \"bg-light rounded py-2 px-3 mb-2\"> " +
     " <p class= \"text-small mb-0 text-muted\"> " + message.content + " </p> " +
     " </div> " +

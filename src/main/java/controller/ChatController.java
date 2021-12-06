@@ -84,6 +84,7 @@ public class ChatController {
 
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setTime(HtmlUtils.htmlEscape(date));
+        chatMessage.setNameAuthor(HtmlUtils.htmlEscape(user.getName()));
         chatMessage.setContent(HtmlUtils.htmlEscape(message));
         List<User> users = chatRepository.findListUserInChat(id);
         for (User value : users) {
@@ -120,9 +121,9 @@ public class ChatController {
                 message.getLocalDateTime().format(dateTimeFormatterDate);
 
         if (message.getIdAuthor().equals(user.getId())) {
-            printMessage = new PrintMessage(true, message.getText(), date);
+            printMessage = new PrintMessage(true, message.getText(), date, message.getNameAuthor());
         } else {
-            printMessage = new PrintMessage(false, message.getText(), date);
+            printMessage = new PrintMessage(false, message.getText(), date, message.getNameAuthor());
         }
 
         return printMessage;

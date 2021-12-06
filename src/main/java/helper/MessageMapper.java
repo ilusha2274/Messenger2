@@ -13,7 +13,8 @@ public class MessageMapper implements RowMapper<Message> {
 
         LocalDateTime localDateTime = resultSet.getTimestamp("date_message").toLocalDateTime();
 
-        return new Message(resultSet.getInt("user_id"), resultSet.getString("text_message"), localDateTime);
+        return new Message(resultSet.getInt("user_id"), resultSet.getString("text_message"),
+                localDateTime, resultSet.getString("user_name"));
 
     }
 }

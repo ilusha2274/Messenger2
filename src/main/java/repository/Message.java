@@ -7,6 +7,7 @@ public class Message {
     private LocalDateTime localDateTime;
     private User author;
     private Integer idAuthor;
+    private String nameAuthor;
 
     public Message(User user, String text, LocalDateTime localDateTime) {
         this.text = text;
@@ -19,10 +20,19 @@ public class Message {
         this.localDateTime = localDateTime;
     }
 
-    public Message(Integer idAuthor,String text,LocalDateTime localDateTime){
+    public Message(Integer idAuthor,String text,LocalDateTime localDateTime, String nameAuthor){
         this.idAuthor = idAuthor;
         this.text = text;
         this.localDateTime = localDateTime;
+        this.nameAuthor = nameAuthor;
+    }
+
+    public String getNameAuthor() {
+        return nameAuthor;
+    }
+
+    public void setNameAuthor(String nameAuthor) {
+        this.nameAuthor = nameAuthor;
     }
 
     public Integer getIdAuthor() {

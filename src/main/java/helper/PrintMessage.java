@@ -4,11 +4,21 @@ public class PrintMessage {
     boolean author;
     String message;
     String date;
+    String nameAuthor;
 
-    public PrintMessage(boolean author, String message, String date) {
+    public PrintMessage(boolean author, String message, String date,String nameAuthor) {
         this.author = author;
         this.message = message;
         this.date = date;
+        this.nameAuthor = nameAuthor;
+    }
+
+    public String getNameAuthor() {
+        return nameAuthor;
+    }
+
+    public void setNameAuthor(String nameAuthor) {
+        this.nameAuthor = nameAuthor;
     }
 
     public String getDate() {

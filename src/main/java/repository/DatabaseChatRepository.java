@@ -107,7 +107,11 @@ public class DatabaseChatRepository implements ChatRepository {
 
     @Override
     public List<Message> getListMessageByNumberChat(int i) {
-        return jdbcTemplate.query(" SELECT * FROM messages WHERE chat_id=? ",
+        return jdbcTemplate.query(" SELECT messages.date_message, messages.user_id, messages.text_message, users.user_name " +
+                        " FROM messages " +
+                        " JOIN users " +
+                        " ON messages.user_id = users.user_id " +
+                        " WHERE chat_id=? ",
                 new MessageMapper(), i);
     }
 
