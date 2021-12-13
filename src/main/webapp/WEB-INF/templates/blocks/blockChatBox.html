@@ -24,12 +24,14 @@
 
     </div>
     <!-- Typing area -->
-    <form method="post" class="bg-light">
+    <form  class="bg-light">
         <input id = "chatID" type="hidden" th:attr="value=${chatID}">
+        <input id = "name" type="hidden" th:attr="value=${name}">
+        <input id = "userId" type="hidden" th:attr="value=${userId}">
         <div class="input-group">
-            <input type="text" name="message" placeholder="Type a message" aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light">
+            <input type="text" id ="message" name="message" placeholder="Type a message" aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light">
             <div class="input-group-append">
-                <button id="send" type="submit" class="btn btn-link"> <i class="fa fa-paper-plane"></i></button>
+                <button id="send" class="btn btn-default" type="button">Send</button>
             </div>
         </div>
     </form>

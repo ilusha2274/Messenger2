@@ -9,6 +9,8 @@
 
     <div class="media w-50 mb-3">
         <div class="media-body ml-3">
+<!--            <td class="messageId" th:text ="${printMessage.messageId}"></td>-->
+            <input id = "messageId" type="hidden" th:attr="value=${printMessage.messageId}">
             <h6 th:text ="${printMessage.nameAuthor}"></h6>
             <div class="bg-light rounded py-2 px-3 mb-2">
                 <p class="text-small mb-0 text-muted" th:text ="${printMessage.message}"></p>

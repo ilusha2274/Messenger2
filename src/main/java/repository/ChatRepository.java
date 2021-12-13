@@ -24,4 +24,8 @@ public interface ChatRepository {
     Chat searchChatBetweenUsers(User user1, User user2);
 
     List<User> findListUserInChat (int chatID);
+
+    List<Message> findFirst20(int chatId);
+
+    List<Message> next20(int chatId, int messageId);
 }

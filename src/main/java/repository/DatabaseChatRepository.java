@@ -13,7 +13,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class DatabaseChatRepository implements ChatRepository {
+public class DatabaseChatRepository implements ChatRepository{
 
     private final JdbcTemplate jdbcTemplate;
     private final TransactionTemplate transactionTemplate;
@@ -107,7 +107,7 @@ public class DatabaseChatRepository implements ChatRepository {
 
     @Override
     public List<Message> getListMessageByNumberChat(int i) {
-        return jdbcTemplate.query(" SELECT messages.date_message, messages.user_id, messages.text_message, users.user_name " +
+        return jdbcTemplate.query(" SELECT messages.date_message, messages.user_id, messages.text_message, users.user_name, messages.message_id " +
                         " FROM messages " +
                         " JOIN users " +
                         " ON messages.user_id = users.user_id " +
@@ -168,5 +168,23 @@ public class DatabaseChatRepository implements ChatRepository {
                 " JOIN users " +
                 " ON users_chats.user_id = users.user_id " +
                 " WHERE users_chats.chat_id = ? ",new UserMapper(), chatID);
+    }
+
+    @Override
+    public List<Message> findFirst20(int chatId) {
+        return jdbcTemplate.query(" SELECT messages.date_message, messages.user_id, messages.text_message, users.user_name, messages.message_id " +
+                " FROM messages " +
+                " JOIN users " +
+                " ON messages.user_id = users.user_id " +
+                " WHERE chat_id=? ORDER BY message_id DESC LIMIT 20 ",new MessageMapper(),chatId);
+    }
+
+    @Override
+    public List<Message> next20(int chatId, int messageId) {
+        return jdbcTemplate.query(" SELECT messages.date_message, messages.user_id, messages.text_message, users.user_name, messages.message_id " +
+                " FROM messages " +
+                " JOIN users " +
+                " ON messages.user_id = users.user_id " +
+                " WHERE chat_id=? AND message_id < ? ORDER BY message_id DESC LIMIT 20 ",new MessageMapper(),chatId,messageId);
     }
 }

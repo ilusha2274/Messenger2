@@ -2,6 +2,7 @@ package controller;
 
 import helper.PrintMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -57,13 +58,15 @@ public class ChatController {
 
         if (chatRepository.findUserInChat(id, user)) {
 
-            ArrayList<PrintMessage> printMessages = printMessages(chatRepository.getListMessageByNumberChat(id), user);
+            ArrayList<PrintMessage> printMessages = printMessages(chatRepository.findFirst20(id), user);
 
             model.addAttribute("activePage", "CHAT");
             model.addAttribute("printMessages", printMessages);
             model.addAttribute("printChats", chats);
             model.addAttribute("active", true);
             model.addAttribute("chatID", id);
+            model.addAttribute("name", user.getName());
+            model.addAttribute("userId", user.getId());
 
 
         } else {
@@ -75,32 +78,56 @@ public class ChatController {
         return "chat";
     }
 
-    @PostMapping("/chat/{id}")
-    public String chat(String message, @AuthenticationPrincipal User user, @PathVariable Integer id) throws IOException {
+    @GetMapping("/chat/{id}/{messageId}")
+    public List<PrintMessage> printNext20messages (@AuthenticationPrincipal User user, @PathVariable Integer id, @PathVariable Integer lastMessageId){
+        return printMessages(chatRepository.next20(id,lastMessageId), user);
+    }
 
-        Message newMessage = chatRepository.addMessageToChat(message, user, id);
+//    @PostMapping("/chat/{id}")
+//    public String chat(String message, @AuthenticationPrincipal User user, @PathVariable Integer id) throws IOException {
+//
+//        Message newMessage = chatRepository.addMessageToChat(message, user, id);
+//        String date = newMessage.getLocalDateTime().format(dateTimeFormatterTime) + " | " +
+//                newMessage.getLocalDateTime().format(dateTimeFormatterDate);
+//
+//        ChatMessage chatMessage = new ChatMessage();
+//        chatMessage.setTime(HtmlUtils.htmlEscape(date));
+//        chatMessage.setNameAuthor(HtmlUtils.htmlEscape(user.getName()));
+//        chatMessage.setContent(HtmlUtils.htmlEscape(message));
+//        List<User> users = chatRepository.findListUserInChat(id);
+//        for (User value : users) {
+//            simpMessagingTemplate.convertAndSendToUser(value.getEmail(), "/queue/messages/" + id, chatMessage);
+//        }
+//        //simpMessagingTemplate.convertAndSend("/topic/messages/" + id, chatMessage);
+//
+//        return "redirect:" + id;
+//    }
+
+    @MessageMapping("/chat/{id}")
+    //@SendTo("/queue/messages/chat/{id}")
+    public void sendMessage(@Payload ChatMessage chatMessage) {
+
+        int id = chatMessage.getIdChat();
+        User user = new User(chatMessage.getUserId());
+        user.setName(chatMessage.getNameAuthor());
+        Message newMessage = chatRepository.addMessageToChat(chatMessage.getContent(), user, id);
         String date = newMessage.getLocalDateTime().format(dateTimeFormatterTime) + " | " +
                 newMessage.getLocalDateTime().format(dateTimeFormatterDate);
 
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setTime(HtmlUtils.htmlEscape(date));
-        chatMessage.setNameAuthor(HtmlUtils.htmlEscape(user.getName()));
-        chatMessage.setContent(HtmlUtils.htmlEscape(message));
+        ChatMessage chatMessage2 = new ChatMessage();
+        chatMessage2.setContent(HtmlUtils.htmlEscape(chatMessage.getContent()));
+        chatMessage2.setNameAuthor(HtmlUtils.htmlEscape(chatMessage.getNameAuthor()));
+        chatMessage2.setTime(HtmlUtils.htmlEscape(date));
+        chatMessage2.setUserId(chatMessage.getUserId());
+
         List<User> users = chatRepository.findListUserInChat(id);
         for (User value : users) {
-            simpMessagingTemplate.convertAndSendToUser(value.getEmail(), "/queue/messages/" + id, chatMessage);
+            simpMessagingTemplate.convertAndSendToUser(value.getEmail(), "/queue/messages/chat/" + id, chatMessage2);
         }
-        //simpMessagingTemplate.convertAndSend("/topic/messages/" + id, chatMessage);
 
-        return "redirect:" + id;
+        //simpMessagingTemplate.convertAndSend("/queue/messages/chat/" + id, chatMessage2);
+
     }
-
-//    @MessageMapping("/chat/{id}")
-//    @SendTo("/topic/messages")
-//    public ChatMessage sendMessage(String message,@AuthenticationPrincipal User user,@PathVariable Integer id) {
-//        chatRepository.addMessageToChat(message, user, id);
-//        return new ChatMessage(HtmlUtils.htmlEscape(message));
-//    }
 
     private ArrayList<PrintMessage> printMessages(List<Message> messages, User user) {
 
@@ -121,9 +148,9 @@ public class ChatController {
                 message.getLocalDateTime().format(dateTimeFormatterDate);
 
         if (message.getIdAuthor().equals(user.getId())) {
-            printMessage = new PrintMessage(true, message.getText(), date, message.getNameAuthor());
+            printMessage = new PrintMessage(true, message.getText(), date, message.getNameAuthor(),message.getMessageId());
         } else {
-            printMessage = new PrintMessage(false, message.getText(), date, message.getNameAuthor());
+            printMessage = new PrintMessage(false, message.getText(), date, message.getNameAuthor(),message.getMessageId());
         }
 
         return printMessage;

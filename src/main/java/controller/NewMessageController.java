@@ -41,10 +41,12 @@ public class NewMessageController {
     public String newMessage(@RequestParam(value = "idChecked", required = false) List<String> nameFriend, String nameChat, @AuthenticationPrincipal User user, Model model) {
 
         Chat newChat = chatRepository.addGroupChat(nameChat, "group", user);
-        for (int i =0;i<nameFriend.size();i++){
-            User newUser = new User(Integer.parseInt(nameFriend.get(i)));
+
+        for (String s : nameFriend) {
+            User newUser = new User(Integer.parseInt(s));
             chatRepository.addUserToGroupChat(newUser, newChat);
         }
+
         model.addAttribute("activePage", "CHAT");
         model.addAttribute("title", user.getName());
         return "redirect:chat";

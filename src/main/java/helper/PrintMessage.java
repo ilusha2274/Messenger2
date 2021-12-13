@@ -5,12 +5,22 @@ public class PrintMessage {
     String message;
     String date;
     String nameAuthor;
+    Integer messageId;
 
-    public PrintMessage(boolean author, String message, String date,String nameAuthor) {
+    public PrintMessage(boolean author, String message, String date,String nameAuthor, Integer messageId) {
         this.author = author;
         this.message = message;
         this.date = date;
         this.nameAuthor = nameAuthor;
+        this.messageId = messageId;
+    }
+
+    public Integer getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(Integer messageId) {
+        this.messageId = messageId;
     }
 
     public String getNameAuthor() {
