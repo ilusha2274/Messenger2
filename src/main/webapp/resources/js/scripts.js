@@ -1,15 +1,12 @@
 var stompClient = null;
 var arr = null;
-var lastId = null;
+var messageId = null;
 
 $(document).ready(function() {
     var chatID = document.querySelector('#chatID');
     if (chatID != null){
         console.log("Index page is ready");
         connect();
-        var arr = document.getElementsByClassName('messageId');
-        var messageId = arr[arr.length - 1].innerHTML -1;
-        addListenerOnLastElement(arr);
     }
 
     $("#send").click(function() {
@@ -28,6 +25,9 @@ function connect() {
         });
 
     });
+    arr = document.querySelectorAll('#messageId');
+    messageId = arr[arr.length - 1].value;
+    addListenerOnLastElement(arr);
 }
 
 function showMessage(message) {
@@ -79,7 +79,7 @@ function showMessageAuthor(message) {
 }
 
 function addListenerOnLastElement(array){
-    array[array.length -1].addEventListener("mouseover", load);
+    array[array.length -1].parentNode.addEventListener("mouseover", load);
 }
 
 function showM(message) {
@@ -97,7 +97,7 @@ function showM(message) {
 function load(evt){
     var xhr = new XMLHttpRequest();
     var chatID = document.querySelector('#chatID').value;
-    var url = "http://localhost:8080/" + chatID + "/" + lastMessageId;
+    var url = "http://localhost:8080/chat/" + chatID + "/" + messageId;
     xhr.open("GET", url);
     xhr.setRequestHeader("Context-type", "application/json");
 
@@ -108,7 +108,7 @@ function load(evt){
                 showM(jsonResponse[i])
             }
             arr = document.getElementsByClassName('messageId');
-            messageId = arr[arr.length - 1].innerHTML -1;
+            messageId = arr[arr.length - 1].value;
             console.log(lastMessageId);
             addListenerOnLastElement(arr);
         }

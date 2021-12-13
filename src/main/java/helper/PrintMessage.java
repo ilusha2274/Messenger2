@@ -1,11 +1,11 @@
 package helper;
 
 public class PrintMessage {
-    boolean author;
-    String message;
-    String date;
-    String nameAuthor;
-    Integer messageId;
+    private boolean author;
+    private String message;
+    private String date;
+    private String nameAuthor;
+    private Integer messageId;
 
     public PrintMessage(boolean author, String message, String date,String nameAuthor, Integer messageId) {
         this.author = author;
@@ -14,6 +14,11 @@ public class PrintMessage {
         this.nameAuthor = nameAuthor;
         this.messageId = messageId;
     }
+
+    public PrintMessage() {
+    }
+
+
 
     public Integer getMessageId() {
         return messageId;

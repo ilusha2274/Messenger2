@@ -1,6 +1,7 @@
 package controller;
 
 import helper.PrintMessage;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -19,6 +20,7 @@ import websocket.ChatMessage;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -78,9 +80,10 @@ public class ChatController {
         return "chat";
     }
 
-    @GetMapping("/chat/{id}/{messageId}")
-    public List<PrintMessage> printNext20messages (@AuthenticationPrincipal User user, @PathVariable Integer id, @PathVariable Integer lastMessageId){
-        return printMessages(chatRepository.next20(id,lastMessageId), user);
+    @GetMapping(value = "/chat/{id}/{messageId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Collection<PrintMessage> printNext20messages (@AuthenticationPrincipal User user, @PathVariable Integer id, @PathVariable Integer messageId){
+        return printMessages(chatRepository.next20(id,messageId), user);
     }
 
 //    @PostMapping("/chat/{id}")
