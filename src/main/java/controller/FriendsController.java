@@ -39,7 +39,9 @@ public class FriendsController {
 
     @PostMapping("/friends")
     public String addNewFriends(Model model, @AuthenticationPrincipal User user, String email) {
+
         User user2 = userRepository.findUserByEmail(email);
+
         if (user2 == null) {
             model.addAttribute("activePage", "FRIENDS");
             model.addAttribute("exception", "Пользователь не найден");

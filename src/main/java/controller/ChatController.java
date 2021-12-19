@@ -83,7 +83,8 @@ public class ChatController {
     @GetMapping(value = "/chat/{id}/{messageId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Collection<PrintMessage> printNext20messages (@AuthenticationPrincipal User user, @PathVariable Integer id, @PathVariable Integer messageId){
-        return printMessages(chatRepository.next20(id,messageId), user);
+        ArrayList<PrintMessage> printMessage = printMessages(chatRepository.next20(id,messageId), user);
+        return printMessage;
     }
 
 //    @PostMapping("/chat/{id}")

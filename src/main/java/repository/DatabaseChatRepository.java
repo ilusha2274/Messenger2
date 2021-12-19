@@ -156,9 +156,19 @@ public class DatabaseChatRepository implements ChatRepository{
 
     @Override
     public Chat searchChatBetweenUsers(User user1, User user2) {
-        return jdbcTemplate.query("SELECT users_users.user1_id AS chatname, users_users.chat_id  FROM users_users " +
-                        "WHERE users_users.user1_id = ? AND users_users.user2_id= ?",
-                new ChatMapper(), user1.getId(), user2.getId()).stream().findAny().orElse(null);
+        return jdbcTemplate.query("select u.user_name AS chatname, uc.chat_id, u.user_id\n" +
+                        "                         from users u  \n" +
+                        "                         join users_users uu  \n" +
+                        "                         on u.user_id = uu.user2_id \n" +
+                        "                         join users_chats uc \n" +
+                        "                         on uu.user1_id=uc.user_id \n" +
+                        "                         join chats \n" +
+                        "                         on uc.chat_id =  chats.chat_id \n" +
+                        "                         and chats.chat_type= 'private' \n" +
+                        "                         join users_chats uc2 \n" +
+                        "                         on uu.user2_id = uc2.user_id and uc.chat_id=uc2.chat_id \n" +
+                        "                         where uu.user1_id = ? and u.user_id = ? OR uu.user1_id = ? and u.user_id = ?",
+                new ChatMapper(), user1.getId(), user2.getId(),user2.getId(), user1.getId()).stream().findAny().orElse(null);
     }
 
     @Override
