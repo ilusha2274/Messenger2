@@ -1,9 +1,9 @@
-var stompClient = null;
-var arr = null;
-var messageId = null;
+let stompClient = null;
+let arr = null;
+let messageId = null;
 
 $(document).ready(function() {
-    var chatID = document.querySelector('#chatID');
+    let chatID = document.querySelector('#chatID');
     if (chatID != null){
         console.log("Index page is ready");
         connect();
@@ -15,9 +15,9 @@ $(document).ready(function() {
 });
 
 function connect() {
-    var socket = new SockJS('/our-websocket');
+    let socket = new SockJS('/our-websocket');
     stompClient = Stomp.over(socket);
-    var chatID = document.querySelector('#chatID').value;
+    let chatID = document.querySelector('#chatID').value;
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
         stompClient.subscribe('/user/queue/messages/chat/' + chatID, function (message) {
@@ -26,15 +26,17 @@ function connect() {
 
     });
     arr = document.querySelectorAll('#messageId');
-    messageId = arr[arr.length - 1].value;
-    addListenerOnLastElement(arr);
+    if (arr.length > 0){
+        messageId = arr[arr.length - 1].value;
+        addListenerOnLastElement(arr);
+    }
 }
 
 function showMessage(message) {
     console.log('Got message: ' + message.content);
-    var userId = document.querySelector('#userId');
+    let userId = document.querySelector('#userId');
     if (userId.value == message.userId){
-    var date = document.getElementById('date');
+    let date = document.getElementById('date');
     date.innerHTML = message.time;
     }else{
     $("#messages").append(" <div class= \"media w-50 mb-3\"> " +
@@ -50,11 +52,11 @@ function showMessage(message) {
 }
 
 function sendMessage() {
-    var chatID = document.querySelector('#chatID');
-    var messageContent = document.querySelector('#message');
-    var nameAuthor = document.querySelector('#name');
-    var userId = document.querySelector('#userId');
-    var chatMessage = {
+    let chatID = document.querySelector('#chatID');
+    let messageContent = document.querySelector('#message');
+    let nameAuthor = document.querySelector('#name');
+    let userId = document.querySelector('#userId');
+    let chatMessage = {
     nameAuthor: nameAuthor.value,
     userId: userId.value,
     content: messageContent.value,
@@ -82,38 +84,54 @@ function addListenerOnLastElement(array){
     array[array.length -1].parentNode.addEventListener("mouseover", load);
 }
 
-function showM(message) {
-    $("#messages").append(" <div class= \"media w-50 mb-3\"> " +
-        " <div class= \"media-body ml-3\"> " +
-        " <h6> " + message.nameAuthor + " </h6> "  +
-        " <div class= \"bg-light rounded py-2 px-3 mb-2\"> " +
-        " <p class= \"text-small mb-0 text-muted\"> " + message.content + " </p> " +
+function printNext20Message(message) {
+
+    if (message.author){
+    $("#messages").append(" <div class= \"media w-50 ml-auto col-md-3 offset-md-6\"> " +
+        " <div class= \"media-body\"> " +
+        " <input id = \"messageId\" type=\"hidden\" value=\"" + message.messageId + "\"> " +
+        " <div class= \"bg-primary rounded py-2 px-3 mb-2\"> " +
+        " <p class= \"text-small mb-0 text-white text-right\"> " + message.message + " </p> " +
         " </div> " +
-        " <p class=\"small text-muted\"> " + message.time + " </p> " +
+        "<p id=\"date\" class=\"small text-muted\">" + message.date + "</p>" +
         " </div> " +
         " </div> ");
+    }else{
+    $("#messages").append(" <div class= \"media w-50 mb-3\"> " +
+        " <div class= \"media-body ml-3\"> " +
+        " <input id = \"messageId\" type=\"hidden\" value=\"" + message.messageId + "\"> " +
+        " <h6> " + message.nameAuthor + " </h6> "  +
+        " <div class= \"bg-light rounded py-2 px-3 mb-2\"> " +
+        " <p class= \"text-small mb-0 text-muted\"> " + message.message + " </p> " +
+        " </div> " +
+        " <p class=\"small text-muted\"> " + message.date + " </p> " +
+        " </div> " +
+        " </div> ");
+    }
 }
 
 function load(evt){
-    var xhr = new XMLHttpRequest();
-    var chatID = document.querySelector('#chatID').value;
-    var url = "http://localhost:8080/chat/" + chatID + "/" + messageId;
+    arr[arr.length -1].parentNode.removeEventListener("mouseover", load);
+    let xhr = new XMLHttpRequest();
+    let chatID = document.querySelector('#chatID').value;
+    let url = "http://localhost:8080/chat/" + chatID + "/" + messageId;
     xhr.open("GET", url);
     xhr.setRequestHeader("Context-type", "application/json");
 
     xhr.onload = function (ev){
-        var jsonResponse = JSON.parse(xhr.responseText);
+        let jsonResponse = JSON.parse(xhr.responseText);
         if(jsonResponse != null && jsonResponse.length > 0){
-            for (var i =0;i < jsonResponse.length;i++){
-                showM(jsonResponse[i])
+            for (let i =0;i < jsonResponse.length;i++){
+                printNext20Message(jsonResponse[i])
+//                arr.push();
             }
-            arr = document.getElementsByClassName('messageId');
-            messageId = arr[arr.length - 1].value;
-            console.log(lastMessageId);
-            addListenerOnLastElement(arr);
+            if (jsonResponse.length == 20){
+                arr = document.querySelectorAll('#messageId');
+                messageId = arr[arr.length - 1].value;
+                addListenerOnLastElement(arr);
+            }
         }
     };
     xhr.send();
-    arr[arr.length -1].removeEventListener("mouseover", load);
 
 };
